@@ -1,5 +1,5 @@
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
@@ -543,7 +543,7 @@ def upload_product_reference_images(
     )
     upload_dir.mkdir(parents=True, exist_ok=True)
     created_images: list[ProductImage] = []
-    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     next_position = (
         db.scalar(
             select(func.coalesce(func.max(ProductImage.position), 0))
@@ -837,7 +837,7 @@ def run_image_generation_job(
     generated_dir.mkdir(parents=True, exist_ok=True)
 
     job.status = "running"
-    job.started_at = datetime.utcnow()
+    job.started_at = datetime.now(timezone.utc)
     job.error_message = None
     db.commit()
 
@@ -916,7 +916,7 @@ def run_image_generation_job(
                 )
 
         job.status = "completed"
-        job.finished_at = datetime.utcnow()
+        job.finished_at = datetime.now(timezone.utc)
         job.result_payload = {
             "provider": "fal",
             "model": settings.fal_image_model,
@@ -948,7 +948,7 @@ def run_image_generation_job(
         if job is not None:
             job.status = "failed"
             job.error_message = str(exc)
-            job.finished_at = datetime.utcnow()
+            job.finished_at = datetime.now(timezone.utc)
             db.commit()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -1048,7 +1048,7 @@ def upload_generated_images_for_job(
             created_images.append(image)
 
         job.status = "completed"
-        job.finished_at = datetime.utcnow()
+        job.finished_at = datetime.now(timezone.utc)
         job.result_payload = {
             "images": [
                 {
@@ -1084,7 +1084,7 @@ def upload_generated_images_for_job(
         if job is not None:
             job.status = "failed"
             job.error_message = str(exc)
-            job.finished_at = datetime.utcnow()
+            job.finished_at = datetime.now(timezone.utc)
             db.commit()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

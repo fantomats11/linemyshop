@@ -14,12 +14,10 @@ class Settings(BaseSettings):
     line_myshop_api_key: str = ""
     line_myshop_api_key_header: str = "X-API-KEY"
     line_myshop_timeout_seconds: float = 15.0
-    line_myshop_create_product_path: str = "/products"
-    line_myshop_update_product_path: str = "/products/{external_product_id}"
-    line_myshop_update_inventory_path: str = (
-        "/variants/{external_variant_id}/inventory"
-    )
-    line_myshop_update_price_path: str = "/variants/{external_variant_id}/price"
+    line_myshop_create_product_path: str = "/myshop/v1/products"
+    line_myshop_update_product_path: str = "/myshop/v1/products/{external_product_id}"
+    line_myshop_update_inventory_path: str = ""
+    line_myshop_update_price_path: str = ""
     line_myshop_default_category_id: int | None = None
     line_myshop_default_brand: str = ""
     line_myshop_default_weight: int = 1

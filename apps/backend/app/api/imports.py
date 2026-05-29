@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib.util
 import shutil
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -97,7 +97,7 @@ def validate_import_csv(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="CSV file is required",
         )
-    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     root = repo_root()
     upload_dir = root / "data" / "input" / "uploads"
     output_dir = root / "data" / "output" / "frontend_imports" / timestamp
