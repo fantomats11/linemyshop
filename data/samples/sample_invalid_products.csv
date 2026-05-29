@@ -1,0 +1,5 @@
+product_group,product_name,color,gender,category,price,sale_price,size,waist,hip,length,sku,barcode,stock,image_1,image_2,image_3,description,note,status
+jeans-invalid-dark,กางเกงยีนส์ขาม้าบานกันหนาว,ยีนส์เข้ม,หญิง,กางเกงยีนส์,1750,1800,M,26-28,34-36,40,DUP-SKU,,5,https://example.com/images/invalid-dark-1.jpg,,,ราคาลดมากกว่าราคาปกติ,barcode intentionally blank,draft
+jeans-invalid-dark,กางเกงยีนส์ขาม้าบานกันหนาว,ยีนส์ดำ,หญิง,กางเกงยีนส์,1750,,XS,28-30,36-38,40,DUP-SKU,INVALID-BARCODE-1,3,https://example.com/images/invalid-dark-1.jpg,,,สีใน product_group ไม่ตรงกัน และ size ไม่รองรับ,,active
+jeans-invalid-light,,ยีนส์อ่อน,หญิง,กางเกงยีนส์,abc,,L,28-30,36-38,40,INVALID-L,INVALID-BARCODE-1,-1,https://example.com/images/invalid-light-1.jpg,,,ชื่อสินค้าว่าง ราคาไม่ใช่ตัวเลข stock ติดลบ barcode ซ้ำ,,archived
+jeans-invalid-missing-image,กางเกงยีนส์ขากระบอก,ยีนส์กลาง,หญิง,กางเกงยีนส์,1500,,XL,30-32,38-42,40,INVALID-XL,,0,,,,image_1 required และ barcode ว่าง,,inactive

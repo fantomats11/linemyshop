@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background:
+    linear-gradient(180deg, #f8fafc 0%, #f4f4f5 280px, #f7f7f8 100%);
+  color: #18181b;
+}
+
+button,
+a {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
