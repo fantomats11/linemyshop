@@ -69,6 +69,49 @@ alembic upgrade head
 curl https://YOUR_BACKEND_DOMAIN/health
 ```
 
+### Self-host Docker Compose ตัวอย่าง
+
+ถ้า deploy บน VPS หรือเครื่อง server ที่มี Docker Compose ใช้ไฟล์ตัวอย่างนี้ได้:
+
+```bash
+cp docker-compose.prod.example.yml docker-compose.prod.yml
+```
+
+สร้างไฟล์ env บน server เท่านั้น แล้วใส่ค่าจริง:
+
+```text
+POSTGRES_PASSWORD=
+DATABASE_URL=postgresql+psycopg://app:YOUR_POSTGRES_PASSWORD@postgres:5432/line_myshop
+LINE_MYSHOP_MOCK_MODE=false
+LINE_MYSHOP_BASE_URL=https://developers-oaplus.line.biz
+LINE_MYSHOP_API_KEY=
+LINE_MYSHOP_DEFAULT_CATEGORY_ID=
+LINE_MYSHOP_DEFAULT_BRAND=CO COAT
+WORDPRESS_BASE_URL=
+WORDPRESS_USERNAME=
+WORDPRESS_APPLICATION_PASSWORD=
+IMAGE_GENERATION_PROVIDER=fal
+FAL_KEY=
+```
+
+รัน backend + database:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+```
+
+รัน migration:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.production exec backend alembic upgrade head
+```
+
+เช็ค health:
+
+```bash
+curl http://YOUR_SERVER_IP:8000/health
+```
+
 ## 3. Frontend publish
 
 แนะนำ deploy frontend บน Vercel โดยตั้ง project root เป็น:
@@ -117,3 +160,18 @@ https://YOUR_FRONTEND_DOMAIN/sync-jobs
 7. approve รูปและตั้งรูปหลักได้
 8. sync LINE ได้เฉพาะสินค้าที่ approved
 9. publish LINE ต้องกดยืนยันเอง
+
+## 5. GitHub CI
+
+ทุก push และ pull request เข้า `main` จะรัน GitHub Actions:
+
+- Backend tests
+- Frontend lint
+- Frontend production build
+- Backend Docker build
+
+รันชุดเดียวกันในเครื่องก่อน push:
+
+```bash
+make ci
+```

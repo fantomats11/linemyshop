@@ -81,6 +81,7 @@ Not created yet:
 - [Validation Rules](docs/validation-rules.md)
 - [LINE MyShop Sync Spec](docs/line-myshop-sync-spec.md)
 - [Local Dev](docs/local-dev.md)
+- [Deployment Checklist](docs/deployment.md)
 
 ## Sample Files
 
@@ -168,6 +169,12 @@ Run backend tests:
 
 ```bash
 make test
+```
+
+Run the publish-readiness checks:
+
+```bash
+make ci
 ```
 
 ## Import Validated CSV

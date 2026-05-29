@@ -1,6 +1,7 @@
 BACKEND_DIR := apps/backend
+FRONTEND_DIR := apps/frontend
 
-.PHONY: install dev migrate test db-up db-down
+.PHONY: install dev migrate test frontend-lint frontend-build docker-build ci db-up db-down
 
 install:
 	@if command -v uv >/dev/null 2>&1; then \
@@ -29,6 +30,17 @@ test:
 	else \
 		cd $(BACKEND_DIR) && . .venv/bin/activate && pytest; \
 	fi
+
+frontend-lint:
+	cd $(FRONTEND_DIR) && npm run lint
+
+frontend-build:
+	cd $(FRONTEND_DIR) && npm run build
+
+docker-build:
+	docker build -t line-myshop-backend:local $(BACKEND_DIR)
+
+ci: test frontend-lint frontend-build docker-build
 
 db-up:
 	docker compose up -d postgres
