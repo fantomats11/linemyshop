@@ -75,6 +75,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
   const [imageGenerationBrief, setImageGenerationBrief] =
     useState<ProductImageGenerationBrief | null>(null);
   const [imageGenerationJob, setImageGenerationJob] = useState<ImageGenerationJob | null>(null);
+  const [selectedImageSlotPositions, setSelectedImageSlotPositions] = useState<number[]>([]);
   const [generatedImageFiles, setGeneratedImageFiles] = useState<File[]>([]);
   const [syncMetadataError, setSyncMetadataError] = useState<string | null>(null);
   const [isSyncMetadataLoading, setIsSyncMetadataLoading] = useState(false);
@@ -138,6 +139,16 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
   useEffect(() => {
     void loadImageGenerationBrief();
   }, [loadImageGenerationBrief]);
+
+  useEffect(() => {
+    if (!imageGenerationBrief || selectedImageSlotPositions.length > 0) {
+      return;
+    }
+    const requiredPositions = imageGenerationBrief.slots
+      .filter((slot) => slot.required)
+      .map((slot) => slot.position);
+    setSelectedImageSlotPositions(requiredPositions);
+  }, [imageGenerationBrief, selectedImageSlotPositions.length]);
 
   async function handleApprove() {
     setIsSubmitting(true);
@@ -514,7 +525,20 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
     }
   }
 
+  function toggleImageSlot(position: number) {
+    setSelectedImageSlotPositions((currentPositions) =>
+      currentPositions.includes(position)
+        ? currentPositions.filter((currentPosition) => currentPosition !== position)
+        : [...currentPositions, position].sort((first, second) => first - second),
+    );
+  }
+
   async function handleRunImageGenerationJob() {
+    if (selectedImageSlotPositions.length === 0) {
+      setError("กรุณาเลือกรูปที่ต้องการสร้างอย่างน้อย 1 รูป");
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
     setImageMessage(null);
@@ -526,6 +550,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
         imageSize: "square",
         outputFormat: "jpeg",
         numImagesPerSlot: 1,
+        slotPositions: selectedImageSlotPositions,
         approve: false,
       });
       setImageGenerationJob(completedJob);
@@ -1051,17 +1076,67 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
               {imageGenerationBrief.warnings.join(", ")}
             </div>
           ) : null}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm">
+            <div>
+              <div className="font-semibold text-zinc-950">
+                เลือกรูปที่จะสร้างด้วย fal.ai
+              </div>
+              <div className="mt-1 text-xs text-zinc-500">
+                เลือกอยู่ {selectedImageSlotPositions.length} จาก {imageGenerationBrief.slots.length} รูป
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedImageSlotPositions(
+                    imageGenerationBrief.slots
+                      .filter((slot) => slot.required)
+                      .map((slot) => slot.position),
+                  )
+                }
+                className={actionLinkClassName}
+              >
+                เลือกเฉพาะรูปจำเป็น
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedImageSlotPositions(
+                    imageGenerationBrief.slots.map((slot) => slot.position),
+                  )
+                }
+                className={actionLinkClassName}
+              >
+                เลือกทั้งหมด
+              </button>
+            </div>
+          </div>
           <div className="mt-4 grid gap-3 lg:grid-cols-7">
             {imageGenerationBrief.slots.map((slot) => (
-              <div
+              <label
                 key={slot.position}
-                className="rounded-lg border border-zinc-200 bg-zinc-50 p-3"
+                className={`block rounded-lg border p-3 ${
+                  selectedImageSlotPositions.includes(slot.position)
+                    ? "border-sky-300 bg-sky-50"
+                    : "border-zinc-200 bg-zinc-50"
+                }`}
               >
-                <div className="text-xs font-semibold text-zinc-500">
-                  รูป {slot.position} · {imageTypeLabel(slot.image_type)}
-                </div>
-                <div className="mt-1 text-sm font-semibold text-zinc-950">
-                  {slot.title}
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedImageSlotPositions.includes(slot.position)}
+                    onChange={() => toggleImageSlot(slot.position)}
+                    className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-sky-500"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-zinc-500">
+                      รูป {slot.position} · {imageTypeLabel(slot.image_type)}
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-zinc-950">
+                      {slot.title}
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-2 line-clamp-4 text-xs leading-5 text-zinc-600">
                   {slot.prompt}
@@ -1069,7 +1144,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                 <div className="mt-2 text-xs font-medium text-zinc-500">
                   {slot.required ? "จำเป็น" : "เสริม"}
                 </div>
-              </div>
+              </label>
             ))}
           </div>
           <div className="mt-5 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
@@ -1093,11 +1168,15 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                 </button>
                 <button
                   type="button"
-                  disabled={isSubmitting || !imageGenerationBrief.ready}
+                  disabled={
+                    isSubmitting ||
+                    !imageGenerationBrief.ready ||
+                    selectedImageSlotPositions.length === 0
+                  }
                   onClick={() => void handleRunImageGenerationJob()}
                   className={productionSyncButtonClassName}
                 >
-                  สร้างรูปด้วย fal.ai
+                  สร้าง {selectedImageSlotPositions.length} รูปด้วย fal.ai
                 </button>
               </div>
             </div>
