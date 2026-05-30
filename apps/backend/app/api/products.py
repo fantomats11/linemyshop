@@ -42,6 +42,7 @@ from app.schemas.products import (
     VALID_IMAGE_TYPES,
 )
 from app.core.config import get_settings
+from app.core.paths import workspace_root
 from app.services.image_generation_client import FalImageGenerationClient
 from app.services.wordpress_client import WordPressMediaClient
 
@@ -57,7 +58,7 @@ MOCK_LINE_CHANNEL = "line_myshop_mock"
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    return workspace_root()
 
 
 def safe_uploaded_filename(filename: str) -> str:

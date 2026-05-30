@@ -17,6 +17,7 @@ from app.commands.import_products import (
     import_rows,
     read_product_rows,
 )
+from app.core.paths import workspace_root
 from app.models import ImportBatch, ImportError
 from app.schemas.imports import (
     CsvValidationResponse,
@@ -31,12 +32,14 @@ router = APIRouter(prefix="/imports", tags=["imports"])
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    return workspace_root()
 
 
 def load_validator_module() -> Any:
-    validator_path = repo_root() / "scripts" / "validate_products_csv.py"
-    spec = importlib.util.spec_from_file_location("product_csv_validator", validator_path)
+    validator_path = Path(__file__).resolve().parents[1] / "services" / "product_csv_validator.py"
+    spec = importlib.util.spec_from_file_location(
+        "product_csv_validator", validator_path
+    )
     if spec is None or spec.loader is None:
         raise RuntimeError("Cannot load CSV validator")
     module = importlib.util.module_from_spec(spec)
