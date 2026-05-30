@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 
 from app.api.imports import router as imports_router
-from app.api.maintenance import router as maintenance_router
 from app.api.products import (
     image_generation_router,
     image_router,
@@ -20,7 +19,6 @@ app.include_router(variant_router)
 app.include_router(image_generation_router)
 app.include_router(imports_router)
 app.include_router(sync_router)
-app.include_router(maintenance_router)
 
 
 @app.get("/health")
