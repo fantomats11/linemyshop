@@ -11,9 +11,11 @@ import {
   uploadProductReferenceImages,
 } from "../../../lib/api";
 import {
-  categoryLabel,
+  categoryGroupName,
+  categoryLeafLabel,
   categoryMeasurementPreset,
   inferGenderFromCategory,
+  productCategoryGroups,
   productCategoryOptions,
 } from "../../../lib/categories";
 import {
@@ -29,6 +31,8 @@ import {
 type VariantDraft = CreateProductVariantInput;
 
 const defaultCategory = "แฟชั่นผู้หญิง>กางเกง";
+const inputClassName =
+  "w-full rounded-md border border-zinc-200 px-2 py-2 text-sm text-zinc-900 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100";
 
 function measurementDraft(category: string): MeasurementField[] {
   return categoryMeasurementPreset(category).map((label) => ({ label, value: "" }));
@@ -75,6 +79,10 @@ export default function NewProductPage() {
   const [createdProduct, setCreatedProduct] = useState<ProductDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const selectedCategoryGroup = categoryGroupName(category);
+  const categoryOptions =
+    productCategoryGroups.find((group) => group.label === selectedCategoryGroup)?.options ??
+    productCategoryOptions;
 
   function updateVariant(index: number, patch: Partial<VariantDraft>) {
     setVariants((current) =>
@@ -96,6 +104,15 @@ export default function NewProductPage() {
         measurements: applyMeasurementPreset(variant.measurements, nextCategory),
       })),
     );
+  }
+
+  function handleCategoryGroupChange(nextGroup: string) {
+    const nextCategory = productCategoryGroups.find(
+      (group) => group.label === nextGroup,
+    )?.options[0];
+    if (nextCategory) {
+      handleCategoryChange(nextCategory.th);
+    }
   }
 
   function updateMeasurement(
@@ -242,13 +259,29 @@ export default function NewProductPage() {
               หมวดหมู่
             </span>
             <select
+              value={selectedCategoryGroup}
+              onChange={(event) => handleCategoryGroupChange(event.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+            >
+              {productCategoryGroups.map((group) => (
+                <option key={group.label} value={group.label}>
+                  {group.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              หมวดย่อย
+            </span>
+            <select
               value={category}
               onChange={(event) => handleCategoryChange(event.target.value)}
               className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
             >
-              {productCategoryOptions.map((option) => (
+              {categoryOptions.map((option) => (
                 <option key={option.id} value={option.th}>
-                  {categoryLabel(option)}
+                  {categoryLeafLabel(option)}
                 </option>
               ))}
             </select>
@@ -296,7 +329,101 @@ export default function NewProductPage() {
             เพิ่ม SKU
           </button>
         </div>
-        <TableShell>
+        <div className="space-y-3 sm:hidden">
+          {variants.map((variant, index) => (
+            <div
+              key={index}
+              className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-sm font-semibold text-zinc-950">
+                  SKU {variant.size || index + 1}
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVariants((current) =>
+                      current.filter((_variant, currentIndex) => currentIndex !== index),
+                    )
+                  }
+                  className={rejectButtonClassName}
+                >
+                  ลบ
+                </button>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <label className="block">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    SKU
+                  </span>
+                  <input
+                    value={variant.sku}
+                    onChange={(event) =>
+                      updateVariant(index, { sku: event.target.value })
+                    }
+                    className={`mt-1 ${inputClassName}`}
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    ไซซ์
+                  </span>
+                  <input
+                    value={variant.size}
+                    onChange={(event) =>
+                      updateVariant(index, { size: event.target.value })
+                    }
+                    className={`mt-1 ${inputClassName}`}
+                  />
+                </label>
+                {(variant.measurements ?? measurementDraft(category)).map(
+                  (measurement, measurementIndex) => (
+                    <label key={measurement.label} className="block">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                        {measurement.label}
+                      </span>
+                      <input
+                        aria-label={`${variant.size} ${measurement.label}`}
+                        value={measurement.value}
+                        onChange={(event) =>
+                          updateMeasurement(index, measurementIndex, event.target.value)
+                        }
+                        className={`mt-1 ${inputClassName}`}
+                      />
+                    </label>
+                  ),
+                )}
+                <label className="block">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    ราคา
+                  </span>
+                  <input
+                    value={String(variant.price ?? "")}
+                    onChange={(event) =>
+                      updateVariant(index, { price: event.target.value })
+                    }
+                    className={`mt-1 ${inputClassName}`}
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    สต๊อก
+                  </span>
+                  <input
+                    value={String(variant.stock_on_hand)}
+                    onChange={(event) =>
+                      updateVariant(index, { stock_on_hand: Number(event.target.value) })
+                    }
+                    inputMode="numeric"
+                    className={`mt-1 ${inputClassName}`}
+                  />
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="hidden sm:block">
+          <TableShell>
           <table className="min-w-full divide-y divide-zinc-200 text-sm">
             <thead className="bg-zinc-100/80 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
               <tr>
@@ -372,7 +499,8 @@ export default function NewProductPage() {
               ))}
             </tbody>
           </table>
-        </TableShell>
+          </TableShell>
+        </div>
       </section>
 
       <section className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">

@@ -66,6 +66,30 @@ export function categoryLabel(category: ProductCategoryOption) {
   return `${category.th} (#${category.id})`;
 }
 
+export function categoryLeafLabel(category: ProductCategoryOption) {
+  const parts = category.th.split(">");
+  return `${parts[parts.length - 1]} (#${category.id})`;
+}
+
+export function categoryGroupName(category: string) {
+  return category.split(">")[0] ?? category;
+}
+
+const productCategoryGroupMap = new Map<string, ProductCategoryOption[]>();
+
+for (const category of productCategoryOptions) {
+  const groupName = categoryGroupName(category.th);
+  productCategoryGroupMap.set(groupName, [
+    ...(productCategoryGroupMap.get(groupName) ?? []),
+    category,
+  ]);
+}
+
+export const productCategoryGroups = Array.from(
+  productCategoryGroupMap,
+  ([label, options]) => ({ label, options }),
+);
+
 export function inferGenderFromCategory(category: string) {
   const lower = category.toLowerCase();
   if (lower.includes("men's") || category.includes("ผู้ชาย")) {
