@@ -1,3 +1,5 @@
+import base64
+import mimetypes
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -129,6 +131,26 @@ def safe_generated_filename(value: str) -> str:
 def is_public_url(value: str) -> bool:
     parsed = urlparse(value)
     return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def upload_file_to_data_url(file: UploadFile, filename: str) -> str:
+    media_type = file.content_type or mimetypes.guess_type(filename)[0] or "image/jpeg"
+    encoded = base64.b64encode(file.file.read()).decode("ascii")
+    return f"data:{media_type};base64,{encoded}"
+
+
+def data_url_to_file(data_url: str, destination_dir: Path, fallback_name: str) -> Path:
+    header, separator, encoded = data_url.partition(",")
+    if separator != "," or not header.startswith("data:"):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="invalid data URL reference image",
+        )
+    media_type = header.removeprefix("data:").split(";", 1)[0] or "image/jpeg"
+    extension = mimetypes.guess_extension(media_type) or ".jpg"
+    destination = destination_dir / f"{fallback_name}{extension}"
+    destination.write_bytes(base64.b64decode(encoded))
+    return destination
 
 
 def resolve_workspace_file(value: str) -> Path:
@@ -288,9 +310,12 @@ def product_summary_by_id(session: Session, product_id: int) -> ProductSummaryRe
 
 
 def image_to_response(image: ProductImage) -> ProductImageResponse:
+    response_url = image.url
+    if image.image_type == "brief" and image.url.startswith("data:"):
+        response_url = "data:stored-reference-image"
     return ProductImageResponse(
         id=image.id,
-        url=image.url,
+        url=response_url,
         position=image.position,
         status=image.status,
         image_type=image.image_type,
@@ -705,8 +730,6 @@ def upload_product_reference_images(
 
     created_images: list[ProductImage] = []
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    settings = get_settings()
-    wordpress_client = WordPressMediaClient(settings)
     next_position = (
         db.scalar(
             select(func.coalesce(func.max(ProductImage.position), 0))
@@ -716,27 +739,21 @@ def upload_product_reference_images(
         or 0
     ) + 1
 
-    with TemporaryDirectory(prefix=f"line-myshop-reference-product-{product.id}-") as temp_dir:
-        upload_dir = Path(temp_dir)
-        for index, file in enumerate(files):
-            if not file.filename:
-                continue
-            filename = f"{timestamp}_{index + 1}_{safe_uploaded_filename(file.filename)}"
-            destination = upload_dir / filename
-            with destination.open("wb") as output_file:
-                shutil.copyfileobj(file.file, output_file)
-            media_response = wordpress_client.upload_media(destination)
-            image = ProductImage(
-                product_id=product.id,
-                url=media_response["source_url"],
-                position=next_position + index,
-                status="draft",
-                image_type="brief",
-                is_main=False,
-                review_note="reference image uploaded by staff to WordPress Media",
-            )
-            db.add(image)
-            created_images.append(image)
+    for index, file in enumerate(files):
+        if not file.filename:
+            continue
+        filename = f"{timestamp}_{index + 1}_{safe_uploaded_filename(file.filename)}"
+        image = ProductImage(
+            product_id=product.id,
+            url=upload_file_to_data_url(file, filename),
+            position=next_position + index,
+            status="draft",
+            image_type="brief",
+            is_main=False,
+            review_note="reference image uploaded by staff and stored as data URL",
+        )
+        db.add(image)
+        created_images.append(image)
 
     db.add(
         AuditLog(
@@ -1474,7 +1491,19 @@ def promote_reference_image_to_product(
     settings = get_settings()
     try:
         product_image_url = reference_image.url
-        if not is_public_url(reference_image.url):
+        if reference_image.url.startswith("data:"):
+            with TemporaryDirectory(
+                prefix=f"line-myshop-promote-reference-{reference_image.id}-"
+            ) as temp_dir:
+                source_path = data_url_to_file(
+                    reference_image.url,
+                    Path(temp_dir),
+                    f"reference-{reference_image.id}",
+                )
+                product_image_url = WordPressMediaClient(settings).upload_media(
+                    source_path
+                )["source_url"]
+        elif not is_public_url(reference_image.url):
             source_path = resolve_workspace_file(reference_image.url)
             product_image_url = WordPressMediaClient(settings).upload_media(source_path)[
                 "source_url"

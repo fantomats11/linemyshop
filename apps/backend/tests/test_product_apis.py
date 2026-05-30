@@ -325,20 +325,11 @@ def test_add_image_url(client: TestClient) -> None:
 
 
 def test_upload_reference_images_creates_brief_images(
-    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    client: TestClient, tmp_path: Path
 ) -> None:
     product_id = client.get("/products").json()[0]["id"]
     image_path = tmp_path / "reference.jpg"
     image_path.write_bytes(b"fake image bytes")
-
-    class FakeWordPressMediaClient:
-        def __init__(self, *_args, **_kwargs) -> None:
-            pass
-
-        def upload_media(self, file_path: Path) -> dict:
-            return {"source_url": f"https://cdn.example.test/{file_path.name}"}
-
-    monkeypatch.setattr(products_api, "WordPressMediaClient", FakeWordPressMediaClient)
 
     with image_path.open("rb") as image_file:
         response = client.post(
@@ -351,7 +342,7 @@ def test_upload_reference_images_creates_brief_images(
     assert len(images) == 1
     assert images[0]["image_type"] == "brief"
     assert images[0]["status"] == "draft"
-    assert images[0]["url"].startswith("https://cdn.example.test/")
+    assert images[0]["url"].startswith("data:image/jpeg;base64,")
 
 
 def test_image_generation_brief_returns_standard_slots(client: TestClient) -> None:
@@ -435,7 +426,7 @@ def test_run_image_generation_job_creates_draft_images(
 
         def generate_image(self, **_kwargs) -> list[dict]:
             assert all(
-                url.startswith("https://cdn.example.test/")
+                url.startswith("data:image/jpeg;base64,")
                 for url in _kwargs["reference_urls"]
             )
             return [{"url": "https://fal.example.test/generated.jpg"}]
