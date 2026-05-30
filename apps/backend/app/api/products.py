@@ -104,6 +104,15 @@ def repo_root() -> Path:
     return workspace_root()
 
 
+def is_resolvable_image_reference(url: str) -> bool:
+    if url.startswith(("http://", "https://", "data:")):
+        return True
+    path = Path(url)
+    if not path.is_absolute():
+        path = repo_root() / path
+    return path.exists()
+
+
 def safe_uploaded_filename(filename: str) -> str:
     return Path(filename).name.replace(" ", "_")
 
@@ -699,6 +708,8 @@ def upload_product_reference_images(
     upload_dir.mkdir(parents=True, exist_ok=True)
     created_images: list[ProductImage] = []
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    settings = get_settings()
+    wordpress_client = WordPressMediaClient(settings)
     next_position = (
         db.scalar(
             select(func.coalesce(func.max(ProductImage.position), 0))
@@ -715,15 +726,15 @@ def upload_product_reference_images(
         destination = upload_dir / filename
         with destination.open("wb") as output_file:
             shutil.copyfileobj(file.file, output_file)
-        relative_path = destination.relative_to(repo_root()).as_posix()
+        media_response = wordpress_client.upload_media(destination)
         image = ProductImage(
             product_id=product.id,
-            url=relative_path,
+            url=media_response["source_url"],
             position=next_position + index,
             status="draft",
             image_type="brief",
             is_main=False,
-            review_note="reference image uploaded by staff",
+            review_note="reference image uploaded by staff to WordPress Media",
         )
         db.add(image)
         created_images.append(image)
@@ -974,10 +985,13 @@ def run_image_generation_job(
         [image for image in product.images if image.image_type == "brief"],
         key=lambda image: (image.position, image.id),
     )
-    if not reference_images:
+    usable_reference_images = [
+        image for image in reference_images if is_resolvable_image_reference(image.url)
+    ]
+    if not usable_reference_images:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="reference images are required before running image generation",
+            detail="usable reference images are required before running image generation",
         )
 
     slots = job.prompt_payload.get("slots", [])
@@ -1002,7 +1016,7 @@ def run_image_generation_job(
     settings = get_settings()
     image_client = FalImageGenerationClient(db, settings, repo_root())
     wordpress_client = WordPressMediaClient(settings)
-    reference_urls = [image.url for image in reference_images]
+    reference_urls = [image.url for image in usable_reference_images]
     generated_dir = (
         repo_root()
         / "data"

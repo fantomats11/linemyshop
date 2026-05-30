@@ -325,11 +325,20 @@ def test_add_image_url(client: TestClient) -> None:
 
 
 def test_upload_reference_images_creates_brief_images(
-    client: TestClient, tmp_path: Path
+    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     product_id = client.get("/products").json()[0]["id"]
     image_path = tmp_path / "reference.jpg"
     image_path.write_bytes(b"fake image bytes")
+
+    class FakeWordPressMediaClient:
+        def __init__(self, *_args, **_kwargs) -> None:
+            pass
+
+        def upload_media(self, file_path: Path) -> dict:
+            return {"source_url": f"https://cdn.example.test/{file_path.name}"}
+
+    monkeypatch.setattr(products_api, "WordPressMediaClient", FakeWordPressMediaClient)
 
     with image_path.open("rb") as image_file:
         response = client.post(
@@ -342,7 +351,7 @@ def test_upload_reference_images_creates_brief_images(
     assert len(images) == 1
     assert images[0]["image_type"] == "brief"
     assert images[0]["status"] == "draft"
-    assert images[0]["url"].startswith("data/input/product-references/")
+    assert images[0]["url"].startswith("https://cdn.example.test/")
 
 
 def test_image_generation_brief_returns_standard_slots(client: TestClient) -> None:
@@ -419,18 +428,16 @@ def test_run_image_generation_job_creates_draft_images(
     product_id = client.get("/products").json()[0]["id"]
     reference_path = tmp_path / "reference.jpg"
     reference_path.write_bytes(b"fake reference")
-    with reference_path.open("rb") as reference_file:
-        assert client.post(
-            f"/products/{product_id}/reference-images",
-            files={"files": ("reference.jpg", reference_file, "image/jpeg")},
-        ).status_code == 200
-    job_id = client.post(f"/products/{product_id}/image-generation-jobs").json()["id"]
 
     class FakeFalImageGenerationClient:
         def __init__(self, *_args, **_kwargs) -> None:
             pass
 
         def generate_image(self, **_kwargs) -> list[dict]:
+            assert all(
+                url.startswith("https://cdn.example.test/")
+                for url in _kwargs["reference_urls"]
+            )
             return [{"url": "https://fal.example.test/generated.jpg"}]
 
         def download_image(self, _url: str, destination: Path) -> None:
@@ -449,6 +456,23 @@ def test_run_image_generation_job_creates_draft_images(
     get_settings.cache_clear()
     monkeypatch.setattr(products_api, "FalImageGenerationClient", FakeFalImageGenerationClient)
     monkeypatch.setattr(products_api, "WordPressMediaClient", FakeWordPressMediaClient)
+    with reference_path.open("rb") as reference_file:
+        assert client.post(
+            f"/products/{product_id}/reference-images",
+            files={"files": ("reference.jpg", reference_file, "image/jpeg")},
+        ).status_code == 200
+    session.add(
+        ProductImage(
+            product_id=product_id,
+            url="data/input/product-references/product-1/missing-reference.jpg",
+            position=99,
+            status="draft",
+            image_type="brief",
+            is_main=False,
+        )
+    )
+    session.commit()
+    job_id = client.post(f"/products/{product_id}/image-generation-jobs").json()["id"]
 
     response = client.post(
         f"/image-generation-jobs/{job_id}/run",
@@ -464,6 +488,7 @@ def test_run_image_generation_job_creates_draft_images(
         select(ProductImage)
         .where(ProductImage.product_id == product_id)
         .where(ProductImage.url.like("https://cdn.example.test/%"))
+        .where(ProductImage.image_type.in_(["product", "detail"]))
     ).all()
     assert len(images) == 2
     assert {image.status for image in images} == {"draft"}
@@ -542,11 +567,6 @@ def test_promote_reference_image_uploads_and_sets_main(
     product_id = client.get("/products").json()[0]["id"]
     image_path = tmp_path / "reference.jpg"
     image_path.write_bytes(b"fake image bytes")
-    with image_path.open("rb") as image_file:
-        reference_image = client.post(
-            f"/products/{product_id}/reference-images",
-            files={"files": ("reference.jpg", image_file, "image/jpeg")},
-        ).json()[0]
 
     class FakeWordPressMediaClient:
         def __init__(self, *_args, **_kwargs) -> None:
@@ -556,6 +576,11 @@ def test_promote_reference_image_uploads_and_sets_main(
             return {"source_url": f"https://cdn.example.test/{file_path.name}"}
 
     monkeypatch.setattr(products_api, "WordPressMediaClient", FakeWordPressMediaClient)
+    with image_path.open("rb") as image_file:
+        reference_image = client.post(
+            f"/products/{product_id}/reference-images",
+            files={"files": ("reference.jpg", image_file, "image/jpeg")},
+        ).json()[0]
 
     response = client.post(f"/product-images/{reference_image['id']}/promote-reference")
 

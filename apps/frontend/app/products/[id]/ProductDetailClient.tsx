@@ -8,6 +8,7 @@ import {
   approveProduct,
   createImageGenerationJob,
   createProductImage,
+  getImageGenerationJob,
   getProduct,
   getProductImageGenerationBrief,
   getProductSyncReadiness,
@@ -32,6 +33,7 @@ import {
   updateProductVariant,
   updateVariantInventory,
   uploadGeneratedImagesForJob,
+  uploadProductReferenceImages,
 } from "../../../lib/api";
 import { formatDateTime, formatMoney, imageTypeLabel, statusLabel } from "../../../lib/format";
 import {
@@ -76,6 +78,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
     useState<ProductImageGenerationBrief | null>(null);
   const [imageGenerationJob, setImageGenerationJob] = useState<ImageGenerationJob | null>(null);
   const [selectedImageSlotPositions, setSelectedImageSlotPositions] = useState<number[]>([]);
+  const [referenceImageFiles, setReferenceImageFiles] = useState<File[]>([]);
   const [generatedImageFiles, setGeneratedImageFiles] = useState<File[]>([]);
   const [syncMetadataError, setSyncMetadataError] = useState<string | null>(null);
   const [isSyncMetadataLoading, setIsSyncMetadataLoading] = useState(false);
@@ -533,6 +536,33 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
     );
   }
 
+  async function handleUploadReferenceImages() {
+    if (referenceImageFiles.length === 0) {
+      setError("กรุณาเลือกไฟล์รูปอ้างอิงอย่างน้อย 1 รูป");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+    setImageMessage(null);
+    try {
+      await uploadProductReferenceImages(productId, referenceImageFiles);
+      setReferenceImageFiles([]);
+      setImageMessage("อัปโหลดรูปอ้างอิงใหม่แล้ว ระบบจะใช้รูปนี้เป็นต้นแบบสำหรับ fal.ai");
+      await loadProduct();
+      await loadImageGenerationBrief();
+      await loadSyncOperations();
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof ApiError
+          ? caughtError.message
+          : "ไม่สามารถอัปโหลดรูปอ้างอิงได้",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   async function handleRunImageGenerationJob() {
     if (selectedImageSlotPositions.length === 0) {
       setError("กรุณาเลือกรูปที่ต้องการสร้างอย่างน้อย 1 รูป");
@@ -542,8 +572,10 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
     setIsSubmitting(true);
     setError(null);
     setImageMessage(null);
+    let jobForRun: ImageGenerationJob | null = null;
     try {
       const job = imageGenerationJob ?? (await createImageGenerationJob(productId));
+      jobForRun = job;
       setImageGenerationJob(job);
       const completedJob = await runImageGenerationJob(job.id, {
         quality: "medium",
@@ -561,6 +593,13 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await loadImageGenerationBrief();
       await loadSyncOperations();
     } catch (caughtError) {
+      if (jobForRun) {
+        try {
+          setImageGenerationJob(await getImageGenerationJob(jobForRun.id));
+        } catch {
+          // Keep the previous job state if the refresh also fails.
+        }
+      }
       setError(
         caughtError instanceof ApiError
           ? caughtError.message
@@ -1076,6 +1115,37 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
               {imageGenerationBrief.warnings.join(", ")}
             </div>
           ) : null}
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold text-zinc-950">
+                  รูปอ้างอิงสำหรับ fal.ai
+                </div>
+                <p className="mt-1 text-sm text-zinc-500">
+                  ใช้เมื่อรูปอ้างอิงเดิมหายหลัง deploy หรืออยากเปลี่ยนต้นแบบการสร้างรูป
+                </p>
+              </div>
+              <div className="grid w-full gap-3 lg:w-auto lg:min-w-[520px] lg:grid-cols-[1fr_auto]">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(event) =>
+                    setReferenceImageFiles(Array.from(event.target.files ?? []))
+                  }
+                  className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm"
+                />
+                <button
+                  type="button"
+                  disabled={isSubmitting || referenceImageFiles.length === 0}
+                  onClick={() => void handleUploadReferenceImages()}
+                  className={approveButtonClassName}
+                >
+                  อัปโหลดรูปอ้างอิงใหม่
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm">
             <div>
               <div className="font-semibold text-zinc-950">
@@ -1153,7 +1223,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                 <div className="text-sm font-semibold text-zinc-950">
                   สร้างรูปสำหรับหน้าร้าน
                 </div>
-              <p className="mt-1 text-sm text-zinc-500">
+                <p className="mt-1 text-sm text-zinc-500">
                   สร้างภาพผ่าน fal.ai จากรูปอ้างอิง แล้วบันทึกเป็นรูปแบบร่างให้ตรวจอีกครั้ง
                 </p>
               </div>
