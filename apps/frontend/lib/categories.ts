@@ -9,7 +9,58 @@ export type ProductCategoryOption = {
   tisi?: string;
 };
 
-export const productCategoryOptions = categories as ProductCategoryOption[];
+export const allProductCategoryOptions = categories as ProductCategoryOption[];
+
+const lineMyShopRelevantCategoryIds = new Set([
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  52,
+  53,
+  54,
+  56,
+  57,
+  58,
+  59,
+  60,
+  61,
+  62,
+  63,
+  64,
+  65,
+  66,
+  67,
+  68,
+  69,
+  70,
+  71,
+  190,
+  191,
+  192,
+  193,
+  194,
+  210,
+  211,
+]);
+
+export const productCategoryOptions = allProductCategoryOptions.filter((category) =>
+  lineMyShopRelevantCategoryIds.has(category.id),
+);
 
 export function categoryLabel(category: ProductCategoryOption) {
   return `${category.th} (#${category.id})`;
