@@ -65,6 +65,7 @@ class ProductVariant(Base, TimestampMixin, UpdatedAtMixin):
     waist: Mapped[str] = mapped_column(String(100), nullable=False)
     hip: Mapped[str] = mapped_column(String(100), nullable=False)
     length: Mapped[str] = mapped_column(String(100), nullable=False)
+    measurements: Mapped[list[dict] | None] = mapped_column(JSON, nullable=True)
     sku: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     barcode: Mapped[str | None] = mapped_column(String(100), nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)

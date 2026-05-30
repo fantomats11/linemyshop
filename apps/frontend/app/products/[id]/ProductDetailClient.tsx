@@ -580,6 +580,9 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
   const approvedStorefrontImages = product.images.filter(isApprovedStorefrontImage);
   const renderableImageUrls = productImageUrls(product.images.map((image) => image.url));
   const hasOnlyBriefImages = hasBriefImageOnly(product.images.map((image) => image.url));
+  const measurementLabels = product.variants[0]?.measurements.map(
+    (measurement) => measurement.label,
+  ) ?? ["เอว", "สะโพก", "ความยาว"];
 
   return (
     <div className="space-y-6">
@@ -767,7 +770,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
         <StatCard label="รูปสินค้าที่อนุมัติ" value={approvedStorefrontImages.length} tone="sky" />
         <StatCard label="สต๊อกทั้งหมด" value={totalStock} tone="emerald" />
         <StatCard label="จองไว้" value={reservedStock} tone="amber" />
-        <StatCard label="ขายได้" value={availableStock} tone="zinc" />
+        <StatCard label="พร้อมขาย" value={availableStock} tone="zinc" />
       </div>
 
       <section className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
@@ -1300,15 +1303,15 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                   <th className="px-4 py-3">SKU</th>
                   <th className="px-4 py-3">Barcode</th>
                   <th className="px-4 py-3">Size</th>
-                  <th className="px-4 py-3">Waist</th>
-                  <th className="px-4 py-3">Hip</th>
-                  <th className="px-4 py-3">Length</th>
+                  {measurementLabels.map((label) => (
+                    <th key={label} className="px-4 py-3">{label}</th>
+                  ))}
                   <th className="px-4 py-3 text-right">Price</th>
                   <th className="px-4 py-3 text-right">Sale Price</th>
                   <th className="px-4 py-3">สถานะ</th>
                   <th className="px-4 py-3 text-right">สต๊อกทั้งหมด</th>
                   <th className="px-4 py-3 text-right">จองไว้</th>
-                  <th className="px-4 py-3 text-right">ขายได้</th>
+                  <th className="px-4 py-3 text-right">พร้อมขาย</th>
                   <th className="px-4 py-3 text-right">จัดการ</th>
                 </tr>
               </thead>
@@ -1324,15 +1327,12 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                     <td className="whitespace-nowrap px-4 py-3 text-zinc-700">
                       {variant.size}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-zinc-700">
-                      {variant.waist}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-zinc-700">
-                      {variant.hip}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-zinc-700">
-                      {variant.length}
-                    </td>
+                    {measurementLabels.map((label) => (
+                      <td key={label} className="whitespace-nowrap px-4 py-3 text-zinc-700">
+                        {variant.measurements.find((measurement) => measurement.label === label)
+                          ?.value ?? "-"}
+                      </td>
+                    ))}
                     <td className="whitespace-nowrap px-4 py-3 text-right text-zinc-700">
                       {formatMoney(variant.price)}
                     </td>

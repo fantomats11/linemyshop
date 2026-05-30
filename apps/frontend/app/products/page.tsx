@@ -185,7 +185,7 @@ export default function ProductsPage() {
   async function handlePublish(productId: number) {
     const product = products.find((item) => item.id === productId);
     if (product && product.total_available_stock <= 0) {
-      setError("เปิดขายไม่ได้: สินค้านี้ไม่มี stock ที่ขายได้");
+      setError("เปิดขายไม่ได้: สินค้านี้ไม่มี stock ที่พร้อมขาย");
       return;
     }
 
@@ -273,7 +273,7 @@ export default function ProductsPage() {
     );
     if (blockedProducts.length > 0) {
       setError(
-        `เปิดขายไม่ได้: มีสินค้า stock ขายได้ 0 จำนวน ${blockedProducts.length} รายการ`,
+        `เปิดขายไม่ได้: มีสินค้า stock พร้อมขาย 0 จำนวน ${blockedProducts.length} รายการ`,
       );
       return;
     }
@@ -542,7 +542,7 @@ export default function ProductsPage() {
             <StatCard label="อนุมัติแล้ว" value={approvedCount} tone="emerald" />
             <StatCard label="ปฏิเสธแล้ว" value={rejectedCount} tone="rose" />
             <StatCard label="Stock รวม" value={totalStock} tone="sky" />
-            <StatCard label="ขายได้รวม" value={totalAvailableStock} tone="emerald" />
+            <StatCard label="พร้อมขายรวม" value={totalAvailableStock} tone="emerald" />
           </div>
 
           {visibleOutOfStockProducts.length > 0 || lowStockProducts.length > 0 ? (
@@ -552,7 +552,7 @@ export default function ProductsPage() {
                   <div className="font-semibold">สต๊อกต้องดูแล</div>
                   <p className="mt-1 text-amber-900">
                     {visibleOutOfStockProducts.length > 0
-                      ? `มีสินค้าเปิดขายแต่ขายได้ 0 จำนวน ${visibleOutOfStockProducts.length} รายการ`
+                      ? `มีสินค้าเปิดขายแต่พร้อมขาย 0 จำนวน ${visibleOutOfStockProducts.length} รายการ`
                       : "ไม่มีสินค้าเปิดขายที่หมดสต๊อก"}
                     {lowStockProducts.length > 0
                       ? ` และมีสินค้าใกล้หมด ${lowStockProducts.length} รายการ`
@@ -630,7 +630,7 @@ export default function ProductsPage() {
                 <option value="name_asc">ชื่อสินค้า A-Z</option>
                 <option value="status_asc">สถานะ</option>
                 <option value="stock_desc">สต๊อกมากสุด</option>
-                <option value="available_stock_asc">ขายได้น้อยสุด</option>
+                <option value="available_stock_asc">พร้อมขายน้อยสุด</option>
                 <option value="variants_desc">จำนวน SKU มากสุด</option>
               </select>
             </label>
@@ -730,7 +730,7 @@ export default function ProductsPage() {
                   <th className="px-4 py-3">หน้าร้าน</th>
                   <th className="px-4 py-3">ส่งล่าสุด</th>
                   <th className="px-4 py-3 text-right">จำนวน SKU</th>
-                  <th className="px-4 py-3 text-right">ขายได้/สต๊อก</th>
+                  <th className="px-4 py-3 text-right">พร้อมขาย/สต๊อก</th>
                   <th className="px-4 py-3">อัปเดตล่าสุด</th>
                   <th className="px-4 py-3 text-right">จัดการ</th>
                 </tr>
@@ -900,7 +900,7 @@ export default function ProductsPage() {
                                   }
                                   title={
                                     product.total_available_stock <= 0
-                                      ? "ไม่มี stock ที่ขายได้"
+                                      ? "ไม่มี stock ที่พร้อมขาย"
                                       : undefined
                                   }
                                   onClick={() => void handlePublish(product.id)}

@@ -1,0 +1,1810 @@
+[
+  {
+    "id": 1,
+    "en": "Health and Beauty",
+    "th": "สุขภาพและความงาม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 2,
+    "en": "Health and Beauty>Cosmetic",
+    "th": "สุขภาพและความงาม>เครื่องสำอาง",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 3,
+    "en": "Health and Beauty>Oral Care",
+    "th": "สุขภาพและความงาม>ดูแลช่องปากและฟัน",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 4,
+    "en": "Health and Beauty>Hair Care",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์ดูแลเส้นผม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 5,
+    "en": "Health and Beauty>Body Care",
+    "th": "สุขภาพและความงาม>ดูแลผิวกาย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 6,
+    "en": "Health and Beauty>Skincare",
+    "th": "สุขภาพและความงาม>ดูแลผิวหน้าและดวงตา",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 7,
+    "en": "Health and Beauty>Fragrance",
+    "th": "สุขภาพและความงาม>น้ำหอม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 8,
+    "en": "Health and Beauty>Storage and Organization",
+    "th": "สุขภาพและความงาม>อุปกรณ์จัดเก็บ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 9,
+    "en": "Health and Beauty>Tools for Facial",
+    "th": "สุขภาพและความงาม>เครื่องล้างหน้าและอุปกรณ์ดูแลผิวหน้า",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 10,
+    "en": "Health and Beauty>Tools for Hair",
+    "th": "สุขภาพและความงาม>อุปกรณ์จัดแต่งทรงผม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 11,
+    "en": "Health and Beauty>Men's Product",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์สำหรับผู้ชาย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 12,
+    "en": "Health and Beauty>Health Product",
+    "th": "สุขภาพและความงาม>อุปกรณ์เพื่อสุขภาพ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 13,
+    "en": "Health and Beauty>Health Monitoring",
+    "th": "สุขภาพและความงาม>อุปกรณ์ตรวจวัดสุขภาพ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 14,
+    "en": "Health and Beauty>Vitamin",
+    "th": "สุขภาพและความงาม>วิตามิน",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 15,
+    "en": "Health and Beauty>Supplement",
+    "th": "สุขภาพและความงาม>อาหารเสริม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 16,
+    "en": "Health and Beauty>Women's product",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์สำหรับผู้หญิง",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 17,
+    "en": "Food and Beverage",
+    "th": "อาหารและเครื่องดื่ม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 18,
+    "en": "Food and Beverage>Street Food",
+    "th": "อาหารและเครื่องดื่ม>สตรีทฟู้ด",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 19,
+    "en": "Food and Beverage>Beverages",
+    "th": "อาหารและเครื่องดื่ม>เครื่องดื่ม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 20,
+    "en": "Food and Beverage>Japanese Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารญี่ปุ่น",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 21,
+    "en": "Food and Beverage>Thai Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารไทย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 22,
+    "en": "Food and Beverage>Western Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารตะวันตก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 23,
+    "en": "Food and Beverage>Eastern Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารตะวันออก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 24,
+    "en": "Food and Beverage>Bakery",
+    "th": "อาหารและเครื่องดื่ม>เบเกอรี่",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 25,
+    "en": "Food and Beverage>Healthy Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารสุขภาพ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 26,
+    "en": "Food and Beverage>Snack",
+    "th": "อาหารและเครื่องดื่ม>ขนม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 27,
+    "en": "Food and Beverage>Fruit",
+    "th": "อาหารและเครื่องดื่ม>ผลไม้",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 28,
+    "en": "Food and Beverage>Dried Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารแห้ง",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 29,
+    "en": "Food and Beverage>Seasoning",
+    "th": "อาหารและเครื่องดื่ม>เครื่องปรุง",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 30,
+    "en": "Food and Beverage>Vegetable and Herb",
+    "th": "อาหารและเครื่องดื่ม>ผักและสมุนไพร",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 31,
+    "en": "Women's Fashion",
+    "th": "แฟชั่นผู้หญิง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 32,
+    "en": "Women's Fashion>Tops",
+    "th": "แฟชั่นผู้หญิง>เสื้อ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 33,
+    "en": "Women's Fashion>Bottoms",
+    "th": "แฟชั่นผู้หญิง>กางเกง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 34,
+    "en": "Women's Fashion>Skirt",
+    "th": "แฟชั่นผู้หญิง>กระโปรง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 35,
+    "en": "Women's Fashion>Underwear",
+    "th": "แฟชั่นผู้หญิง>ชุดชั้นใน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 36,
+    "en": "Women's Fashion>Sleepwear",
+    "th": "แฟชั่นผู้หญิง>ชุดนอน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 37,
+    "en": "Women's Fashion>Sportswear",
+    "th": "แฟชั่นผู้หญิง>ชุดกีฬา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 38,
+    "en": "Women's Fashion>Socks",
+    "th": "แฟชั่นผู้หญิง>ถุงเท้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 39,
+    "en": "Women's Fashion>Stockings",
+    "th": "แฟชั่นผู้หญิง>ถุงน่อง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 40,
+    "en": "Women's Fashion>Gloves",
+    "th": "แฟชั่นผู้หญิง>ถุงมือ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 41,
+    "en": "Women's Fashion>Dress",
+    "th": "แฟชั่นผู้หญิง>เดรส",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 42,
+    "en": "Women's Fashion>Headwear",
+    "th": "แฟชั่นผู้หญิง>หมวก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 43,
+    "en": "Men's Fashion",
+    "th": "แฟชั่นผู้ชาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 44,
+    "en": "Men's Fashion>Tops",
+    "th": "แฟชั่นผู้ชาย>เสื้อ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 45,
+    "en": "Men's Fashion>Bottoms",
+    "th": "แฟชั่นผู้ชาย>กางเกง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 46,
+    "en": "Men's Fashion>Underwear",
+    "th": "แฟชั่นผู้ชาย>กางเกงใน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 47,
+    "en": "Men's Fashion>Sportswear",
+    "th": "แฟชั่นผู้ชาย>ชุดกีฬา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 48,
+    "en": "Men's Fashion>Sleepwear",
+    "th": "แฟชั่นผู้ชาย>ชุดนอน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 49,
+    "en": "Men's Fashion>Socks",
+    "th": "แฟชั่นผู้ชาย>ถุงเท้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 50,
+    "en": "Men's Fashion>Headwear",
+    "th": "แฟชั่นผู้ชาย>หมวก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 51,
+    "en": "Unisex's Fashion",
+    "th": "เสื้อผ้า Unisex",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 52,
+    "en": "Unisex's Fashion>Tops",
+    "th": "เสื้อผ้า Unisex>เสื้อ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 53,
+    "en": "Unisex's Fashion>Bottoms",
+    "th": "เสื้อผ้า Unisex>กางเกง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 54,
+    "en": "Unisex's Fashion>Headwear",
+    "th": "เสื้อผ้า Unisex>หมวก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 55,
+    "en": "Watch-Jewelry-Accessories",
+    "th": "เครื่องประดับ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 56,
+    "en": "Watch-Jewelry-Accessories>Glasses",
+    "th": "เครื่องประดับ>แว่นตา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 57,
+    "en": "Watch-Jewelry-Accessories>Accessories",
+    "th": "เครื่องประดับ>เครื่องประดับ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 58,
+    "en": "Watch-Jewelry-Accessories>Watches",
+    "th": "เครื่องประดับ>นาฬิกา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 59,
+    "en": "Bags",
+    "th": "กระเป๋า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 60,
+    "en": "Bags>Wallet",
+    "th": "กระเป๋า>กระเป๋าเงิน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 61,
+    "en": "Bags>Crossbody Bag",
+    "th": "กระเป๋า>กระเป๋าสะพาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 62,
+    "en": "Bags>Backpack",
+    "th": "กระเป๋า>กระเป๋าเป้",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 63,
+    "en": "Bags>Handbag",
+    "th": "กระเป๋า>กระเป๋าถือ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 64,
+    "en": "Bags>Luggage",
+    "th": "กระเป๋า>กระเป๋าเดินทาง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 65,
+    "en": "Bags>Laptop Bag",
+    "th": "กระเป๋า>กระเป๋าแล็ปท๊อป",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 66,
+    "en": "Bags>Accessories",
+    "th": "กระเป๋า>อุปกรณ์เสริม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 67,
+    "en": "Shoes",
+    "th": "รองเท้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 68,
+    "en": "Shoes>Men's Shoes",
+    "th": "รองเท้า>รองเท้าผู้ชาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 69,
+    "en": "Shoes>Women's Shoes",
+    "th": "รองเท้า>รองเท้าผู้หญิง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 70,
+    "en": "Shoes>Unisex's Shoes",
+    "th": "รองเท้า>รองเท้าสำหรับทุกเพศ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 71,
+    "en": "Shoes>Accessories",
+    "th": "รองเท้า>อุปกรณ์เสริมสำหรับรองเท้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 72,
+    "en": "Automotive",
+    "th": "ยานยนต์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 73,
+    "en": "Automotive>Motorcycle and Accessories",
+    "th": "ยานยนต์>รถจักรยานยนต์และอุปกรณ์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 74,
+    "en": "Automotive>Car Care",
+    "th": "ยานยนต์>ดูแลรถ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 75,
+    "en": "Automotive>Car and Accessories",
+    "th": "ยานยนต์>รถยนต์และอุปกรณ์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 76,
+    "en": "Books Stationary and Music",
+    "th": "หนังสือ เครื่องเขียน และดนตรี",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 77,
+    "en": "Books Stationary and Music>Thai Books",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>หนังสือภาษาไทย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 78,
+    "en": "Books Stationary and Music>English Books",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>หนังสือภาษาอังกฤษ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 79,
+    "en": "Books Stationary and Music>International Books",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>หนังสือภาษาอื่นๆ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 80,
+    "en": "Mobile-Gadget-Computer",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 81,
+    "en": "Mobile-Gadget-Computer>Tablet",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>แท็บเล็ต",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 82,
+    "en": "Mobile-Gadget-Computer>Camera",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>กล้อง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 83,
+    "en": "Mobile-Gadget-Computer>Gadget",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>แก็ดเจ็ต",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 84,
+    "en": "Mobile-Gadget-Computer>Computer and Laptop",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>คอมพิวเตอร์และแล็บท็อป",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 85,
+    "en": "Mobile-Gadget-Computer>Cell Phone",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>มือถือ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 86,
+    "en": "Mobile-Gadget-Computer>Game console and Accessories",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>เครื่องเกมส์ แผ่นเกม และอุปกรณ์เสริม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 87,
+    "en": "Mobile-Gadget-Computer>Softwares",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>ซอฟแวร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 88,
+    "en": "Home and Garden",
+    "th": "บ้านและสวน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 89,
+    "en": "Home and Garden>Kitchenware",
+    "th": "บ้านและสวน>ครัวและอุปกรณ์ทำอาหาร",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 90,
+    "en": "Home and Garden>Home Decoration",
+    "th": "บ้านและสวน>ของตกแต่งบ้าน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 91,
+    "en": "Home and Garden>Furniture",
+    "th": "บ้านและสวน>เฟอร์นิเจอร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 92,
+    "en": "Home and Garden>Garden",
+    "th": "บ้านและสวน>สวน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 93,
+    "en": "Home and Garden>Plant and Vegetable",
+    "th": "บ้านและสวน>พืชผักสวนครัว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 94,
+    "en": "Home and Garden>Electricity",
+    "th": "บ้านและสวน>ระบบไฟ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 95,
+    "en": "Home and Garden>Tools",
+    "th": "บ้านและสวน>ซ่อมแซมบ้าน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 96,
+    "en": "Home and Garden>Door and Window",
+    "th": "บ้านและสวน>ประตูหน้าต่าง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 97,
+    "en": "Home and Garden>Floor and Wall",
+    "th": "บ้านและสวน>พื้นและผนัง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 98,
+    "en": "Home and Garden>Bathroom and Toiletries",
+    "th": "บ้านและสวน>ห้องน้ำ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 99,
+    "en": "Home and Garden>Bedroom",
+    "th": "บ้านและสวน>ห้องนอน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 100,
+    "en": "Home and Garden>Cleaning",
+    "th": "บ้านและสวน>อุปกรณ์และผลิตภัณฑ์ทำความสะอาด",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 101,
+    "en": "Services",
+    "th": "บริการ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 102,
+    "en": "Services>Photography",
+    "th": "บริการ>ถ่ายภาพ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 103,
+    "en": "Services>Food and Beverage",
+    "th": "บริการ>อาหารและเครื่องดื่ม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 104,
+    "en": "Services>Specialist",
+    "th": "บริการ>ผู้เชี่ยวชาญ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 105,
+    "en": "Services>Games",
+    "th": "บริการ>เกมส์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 106,
+    "en": "Services>Home and Garden",
+    "th": "บริการ>บ้านและสวน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 107,
+    "en": "Services>Fashion",
+    "th": "บริการ>แฟชั่น",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 108,
+    "en": "Services>Education",
+    "th": "บริการ>การศึกษา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 109,
+    "en": "Services>Automotive",
+    "th": "บริการ>ยานยนต์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 110,
+    "en": "Services>House",
+    "th": "บริการ>บริการเกี่ยวกับบ้าน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 111,
+    "en": "Services>Printing",
+    "th": "บริการ>สิ่งพิมพ์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 112,
+    "en": "Mom and Kid",
+    "th": "แม่และเด็ก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 113,
+    "en": "Mom and Kid>Maternity and Pregnancy",
+    "th": "แม่และเด็ก>แม่และการตั้งครรภ์",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 114,
+    "en": "Mom and Kid>Boy's Fashion",
+    "th": "แม่และเด็ก>เสื้อผ้าเด็กผู้ชาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 115,
+    "en": "Mom and Kid>Girl's Fashion",
+    "th": "แม่และเด็ก>เสื้อผ้าเด็กผู้หญิง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 116,
+    "en": "Mom and Kid>Unisex's Fashion",
+    "th": "แม่และเด็ก>เสื้อผ้า unisex",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 117,
+    "en": "Mom and Kid>Baby Fashion",
+    "th": "แม่และเด็ก>เสื้อผ้าเด็กทารก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 118,
+    "en": "Mom and Kid>Child Care Products",
+    "th": "แม่และเด็ก>ผลิตภัณฑ์ดูแลเด็ก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 119,
+    "en": "Mom and Kid>Stroller",
+    "th": "แม่และเด็ก>รถเข็นเด็ก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 120,
+    "en": "Mom and Kid>Toys",
+    "th": "แม่และเด็ก>ของเล่น",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 121,
+    "en": "Mom and Kid>Feeding Tools",
+    "th": "แม่และเด็ก>อุปกรณ์ป้อนอาหาร",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 122,
+    "en": "Mom and Kid>Food and Milk",
+    "th": "แม่และเด็ก>อาหารและนม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 123,
+    "en": "Mom and Kid>Diaper",
+    "th": "แม่และเด็ก>ผ้าอ้อม",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 124,
+    "en": "Electronics",
+    "th": "เครื่องใช้ไฟฟ้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 125,
+    "en": "Electronics>Television",
+    "th": "เครื่องใช้ไฟฟ้า>ทีวี",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 126,
+    "en": "Electronics>Audio and Entertainment",
+    "th": "เครื่องใช้ไฟฟ้า>เครื่องเสียงและบันเทิง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 127,
+    "en": "Electronics>Air Conditioner",
+    "th": "เครื่องใช้ไฟฟ้า>เครื่องปรับอากาศ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 128,
+    "en": "Electronics>Clothes Care",
+    "th": "เครื่องใช้ไฟฟ้า>ดูแลเสื้อผ้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 129,
+    "en": "Electronics>Cleaning Machine",
+    "th": "เครื่องใช้ไฟฟ้า>เครื่องทำความสะอาด",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 130,
+    "en": "Electronics>Kitchen",
+    "th": "เครื่องใช้ไฟฟ้า>เครื่องใช้ไฟฟ้าในครัว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 131,
+    "en": "Electronics>Bathroom",
+    "th": "เครื่องใช้ไฟฟ้า>เครื่องใช้ไฟฟ้าในห้องน้ำ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 132,
+    "en": "Arts and Crafts",
+    "th": "ศิลปะ-งานฝีมือ-ของสะสม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 133,
+    "en": "Arts and Crafts>Amulets",
+    "th": "ศิลปะ-งานฝีมือ-ของสะสม>พระเครื่อง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 134,
+    "en": "Arts and Crafts>Talisman",
+    "th": "ศิลปะ-งานฝีมือ-ของสะสม>ของขลัง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 135,
+    "en": "Arts and Crafts>Craft",
+    "th": "ศิลปะ-งานฝีมือ-ของสะสม>งานฝีมือ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 136,
+    "en": "Arts and Crafts>Art and Collectible Art",
+    "th": "ศิลปะ-งานฝีมือ-ของสะสม>งานศิลปะ และของสะสม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 137,
+    "en": "Pet Supplies",
+    "th": "สัตว์เลี้ยง",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 138,
+    "en": "Pet Supplies>Bird",
+    "th": "สัตว์เลี้ยง>นก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 139,
+    "en": "Pet Supplies>Fish",
+    "th": "สัตว์เลี้ยง>ปลา",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 140,
+    "en": "Pet Supplies>Cat",
+    "th": "สัตว์เลี้ยง>แมว",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 141,
+    "en": "Pet Supplies>Dog",
+    "th": "สัตว์เลี้ยง>สุนัข",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 142,
+    "en": "Sports",
+    "th": "อุปกรณ์กีฬา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 143,
+    "en": "Sports>Running",
+    "th": "อุปกรณ์กีฬา>วิ่ง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 144,
+    "en": "Sports>Football",
+    "th": "อุปกรณ์กีฬา>ฟุตบอล",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 145,
+    "en": "Sports>Basketball",
+    "th": "อุปกรณ์กีฬา>บาสเกตบอล",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 146,
+    "en": "Sports>Exercise Equipment",
+    "th": "อุปกรณ์กีฬา>อุปกรณ์ออกกำลังกาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 147,
+    "en": "Sports>Tennis",
+    "th": "อุปกรณ์กีฬา>เทนนิส",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 148,
+    "en": "Sports>Swimming",
+    "th": "อุปกรณ์กีฬา>ว่ายน้ำ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 149,
+    "en": "Sports>Cycling",
+    "th": "อุปกรณ์กีฬา>จักรยาน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 150,
+    "en": "Sports>Boxing",
+    "th": "อุปกรณ์กีฬา>มวย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 151,
+    "en": "Sports>Badminton",
+    "th": "อุปกรณ์กีฬา>แบดมินตัน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 152,
+    "en": "Sports>Table Tennis",
+    "th": "อุปกรณ์กีฬา>ปิงปอง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 153,
+    "en": "Sports>Yoga",
+    "th": "อุปกรณ์กีฬา>โยคะ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 154,
+    "en": "Travel",
+    "th": "ท่องเที่ยว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 155,
+    "en": "Travel>Tour Package",
+    "th": "ท่องเที่ยว>แพ็กเกจทัวร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 156,
+    "en": "Travel>Activities Package",
+    "th": "ท่องเที่ยว>แพ็กเกจกิจกรรม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 157,
+    "en": "Travel>Accommodation",
+    "th": "ท่องเที่ยว>ที่พัก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 158,
+    "en": "Travel>Transportation",
+    "th": "ท่องเที่ยว>เดินทาง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 159,
+    "en": "Travel>Food and Beverage Deals",
+    "th": "ท่องเที่ยว>ดีลอาหาร",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 160,
+    "en": "Travel>Travel Insurance",
+    "th": "ท่องเที่ยว>ประกันการท่องเที่ยว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 161,
+    "en": "Travel>Travel Accessories",
+    "th": "ท่องเที่ยว>ของใช้สำหรับการเดินทาง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 162,
+    "en": "Other",
+    "th": "อื่นๆ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 163,
+    "en": "Automotive>Tires and Wheel",
+    "th": "ยานยนต์>ยางและล้อรถยนตร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 164,
+    "en": "Automotive>Oil and Fluid",
+    "th": "ยานยนต์>น้ำมันเครื่องและของเหลว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 165,
+    "en": "Home and Garden>Storage equipment",
+    "th": "บ้านและสวน>อุปกรณ์จัดเก็บของ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 166,
+    "en": "Mobile-Gadget-Computer>Drones",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>โดรน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 167,
+    "en": "Mobile-Gadget-Computer>Securities camera",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>กล้องรักษาความปลอดภัย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 168,
+    "en": "Mobile-Gadget-Computer>Audio",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>เครื่องเสียง ลำโพง และหูฟัง",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 169,
+    "en": "Mobile-Gadget-Computer>Electronic Accessories",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>อุปกรณ์เสริมอิเล็กทรอนิกส์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 170,
+    "en": "Pet Supplies>Service and Voucher",
+    "th": "สัตว์เลี้ยง>เซอร์วิส และบัตรกำนัล",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 171,
+    "en": "Pet Supplies>Exotic pet",
+    "th": "สัตว์เลี้ยง>สัตว์เลี้ยงชนิดพิเศษ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 172,
+    "en": "Pet Supplies>Small Pets",
+    "th": "สัตว์เลี้ยง>สัตว์เล็ก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 173,
+    "en": "Sports>Camping and Hiking",
+    "th": "อุปกรณ์กีฬา>เดินป่า และปีนเขา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 174,
+    "en": "Sports>Water Sports",
+    "th": "อุปกรณ์กีฬา>กีฬาทางน้ำ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 175,
+    "en": "Health and Beauty>Adult Diapers and Incontinence",
+    "th": "สุขภาพและความงาม>ผ้าอ้อมผู้ใหญ่และแผ่นรองซับ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 176,
+    "en": "Health and Beauty>Bath and Body",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์อาบน้ำและดูแลผิวกาย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 177,
+    "en": "Health and Beauty>Beauty Massage and Spa Package",
+    "th": "สุขภาพและความงาม>แพ็คเกจความงาม นวด และสปา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 178,
+    "en": "Health and Beauty>First Aid Supplies and OTC medicines",
+    "th": "สุขภาพและความงาม>อุปกรณ์ปฐมพยาบาลและยา",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 179,
+    "en": "Health and Beauty>Hair Removal and Shavers",
+    "th": "สุขภาพและความงาม>อุปกรณ์กำจัดขน และโกนหนวด",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 180,
+    "en": "Health and Beauty>Health and Wellness Package",
+    "th": "สุขภาพและความงาม>แพ็คเกจสุขภาพและการออกกำลังกาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 181,
+    "en": "Health and Beauty>Herbs and Traditional Medicine",
+    "th": "สุขภาพและความงาม>สมุนไพรและยาแผนไทย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 182,
+    "en": "Health and Beauty>Makeup Accessories",
+    "th": "สุขภาพและความงาม>อุปกรณ์แต่งหน้า",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 183,
+    "en": "Health and Beauty>Nails",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์และอุปกรณ์สำหรับเล็บ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 184,
+    "en": "Health and Beauty>Nutritional Foods and Drinks",
+    "th": "สุขภาพและความงาม>อาหารและเครื่องดื่มเสริมโภชนาการ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 185,
+    "en": "Health and Beauty>Optical Care and Contact Lenses",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์ดูแลสายตาและคอนแทคเลนส์",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 186,
+    "en": "Health and Beauty>Personal Care",
+    "th": "สุขภาพและความงาม>ของใช้ส่วนตัว",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 187,
+    "en": "Health and Beauty>Portable Saunas and Electric Massagers",
+    "th": "สุขภาพและความงาม>ซาวน่าแบบพกพาและเครื่องนวด",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 188,
+    "en": "Health and Beauty>Sports Nutrition",
+    "th": "สุขภาพและความงาม>โปรตีนและอาหารเสริมเพื่อการออกกำลังกาย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 189,
+    "en": "Health and Beauty>Weight Management",
+    "th": "สุขภาพและความงาม>ผลิตภัณฑ์ควบคุมน้ำหนัก",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 190,
+    "en": "Men's Fashion>Men Bags",
+    "th": "แฟชั่นผู้ชาย>กระเป๋าผู้ชาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 191,
+    "en": "Men's Fashion>Men Shoes",
+    "th": "แฟชั่นผู้ชาย>รองเท้าผู้ชาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 192,
+    "en": "Unisex's Fashion>Sleepwear",
+    "th": "เสื้อผ้า Unisex>ชุดนอน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 193,
+    "en": "Unisex's Fashion>Bags",
+    "th": "เสื้อผ้า Unisex>กระเป๋า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 194,
+    "en": "Unisex's Fashion>Shoes",
+    "th": "เสื้อผ้า Unisex>รองเท้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 195,
+    "en": "Food and Beverage>Dessert and Sweets",
+    "th": "อาหารและเครื่องดื่ม>ขนมหวานและของหวาน",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 196,
+    "en": "Food and Beverage>Chinese Food",
+    "th": "อาหารและเครื่องดื่ม>อาหารจีน",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 197,
+    "en": "Food and Beverage>Meat",
+    "th": "อาหารและเครื่องดื่ม>เนื้อสัตว์",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 198,
+    "en": "Food and Beverage>Seafood",
+    "th": "อาหารและเครื่องดื่ม>อาหารทะเล",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 199,
+    "en": "Food and Beverage>Food Coupon",
+    "th": "อาหารและเครื่องดื่ม>คูปองอาหาร",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 200,
+    "en": "Travel>Massage and Spa Deals",
+    "th": "ท่องเที่ยว>ดีลนวดและสปา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 201,
+    "en": "Mom and Kid>Family Fashion",
+    "th": "แม่และเด็ก>ชุดครอบครัว",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 202,
+    "en": "Mom and Kid>Kid Learning and Activity Package",
+    "th": "แม่และเด็ก>แพ็คเกจกิจกรรมและเสริมพัฒนาการ",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 203,
+    "en": "Toys",
+    "th": "ของเล่น",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 204,
+    "en": "Toys>Brick collectible and Remote Control Toys",
+    "th": "ของเล่น>ตัวต่อ ของสะสม และของเล่นรีโมทคอนโทรล",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 205,
+    "en": "Toys>Children Books",
+    "th": "ของเล่น>หนังสือสำหรับเด็ก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 206,
+    "en": "Toys>Kid Toys",
+    "th": "ของเล่น>ของเล่นสำหรับเด็ก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 207,
+    "en": "Automotive>Motor Riding Gears",
+    "th": "ยานยนต์>ชุดขับขี่และหมวกกันน็อก",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 208,
+    "en": "Health and Beauty>Tools for Body",
+    "th": "สุขภาพและความงาม>อุปกรณ์อาบน้ำและดูแลผิวกาย",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 209,
+    "en": "Health and Beauty>Wig and Hair Extensions and Pads",
+    "th": "สุขภาพและความงาม>วิกผมและแฮร์พีช",
+    "fda": "√",
+    "fdaAds": "√",
+    "tisi": "√"
+  },
+  {
+    "id": 210,
+    "en": "Women's Fashion>Swimwear",
+    "th": "แฟชั่นผู้หญิง>ชุดว่ายน้ำ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 211,
+    "en": "Women's Fashion>Activewear",
+    "th": "แฟชั่นผู้หญิง>ชุดออกกำลังกาย",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 212,
+    "en": "Services>Entertainment",
+    "th": "บริการ>เอ็นเตอร์เทนเม้นท์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 213,
+    "en": "Books Stationary and Music>Stationary",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>เครื่องเขียน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 214,
+    "en": "Home and Garden>Room Diffuser",
+    "th": "บ้านและสวน>ตัวกระจายกลิ่นหอมในบ้าน",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 215,
+    "en": "Books Stationary and Music>Calendar and Planners",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>ปฏิทินและแพลนเนอร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 216,
+    "en": "Books Stationary and Music>Sewing",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>อุปกรณ์ตัดเย็บผ้า",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 217,
+    "en": "Books Stationary and Music>Art Supplies",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>อุปกรณ์ศิลปะ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 218,
+    "en": "Books Stationary and Music>Gift and Wrapping",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>ของขวัญและอุปกรณ์ห่อของขวัญ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 219,
+    "en": "Books Stationary and Music>Music Instrument",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>เครื่องดนตรี",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 220,
+    "en": "Books Stationary and Music>Vlny Cassette and CD",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>แผ่นเสียง เทปคาสเซ็ท และซีดี",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 221,
+    "en": "Books Stationary and Music>Music Accessories",
+    "th": "หนังสือ เครื่องเขียน และดนตรี>อุปกรณ์เสริมเครื่องดนตรี",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 222,
+    "en": "Mobile-Gadget-Computer>Game Top-up",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>เติมเกมส์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 223,
+    "en": "Mobile-Gadget-Computer>Printer and Accessories",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>ปรินเตอร์และอุปกรณ์เสริม",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 224,
+    "en": "Mobile-Gadget-Computer>Computer Accessories",
+    "th": "มือถือ-แก็ดเจ็ต-คอมพิวเตอร์>อุปกรณ์เสริมคอมพิวเตอร์",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": "√"
+  },
+  {
+    "id": 225,
+    "en": "Home and Garden>Tumbler",
+    "th": "บ้านและสวน>แก้วเก็บอุณหภูมิ",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  },
+  {
+    "id": 226,
+    "en": "Home and Garden>Coffee and Tea Machine",
+    "th": "บ้านและสวน>เครื่องชงกาแฟและชา",
+    "fda": "",
+    "fdaAds": "",
+    "tisi": ""
+  }
+]

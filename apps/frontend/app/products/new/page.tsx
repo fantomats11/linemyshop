@@ -5,10 +5,17 @@ import { useState } from "react";
 import {
   ApiError,
   CreateProductVariantInput,
+  MeasurementField,
   createProduct,
   ProductDetail,
   uploadProductReferenceImages,
 } from "../../../lib/api";
+import {
+  categoryLabel,
+  categoryMeasurementPreset,
+  inferGenderFromCategory,
+  productCategoryOptions,
+} from "../../../lib/categories";
 import {
   actionLinkClassName,
   approveButtonClassName,
@@ -21,13 +28,28 @@ import {
 
 type VariantDraft = CreateProductVariantInput;
 
-const defaultVariant = (size = "M"): VariantDraft => ({
+const defaultCategory = "แฟชั่นผู้หญิง>กางเกง";
+
+function measurementDraft(category: string): MeasurementField[] {
+  return categoryMeasurementPreset(category).map((label) => ({ label, value: "" }));
+}
+
+function applyMeasurementPreset(
+  current: MeasurementField[] | undefined,
+  category: string,
+): MeasurementField[] {
+  const previousValues = current ?? [];
+  return categoryMeasurementPreset(category).map((label, index) => ({
+    label,
+    value: previousValues[index]?.value ?? "",
+  }));
+}
+
+const defaultVariant = (size = "M", category = defaultCategory): VariantDraft => ({
   sku: "",
   barcode: "",
   size,
-  waist: "",
-  hip: "",
-  length: "",
+  measurements: measurementDraft(category),
   price: "",
   sale_price: "",
   stock_on_hand: 0,
@@ -40,14 +62,14 @@ export default function NewProductPage() {
   const [name, setName] = useState("");
   const [color, setColor] = useState("");
   const [gender, setGender] = useState("หญิง");
-  const [category, setCategory] = useState("กางเกงยีนส์");
+  const [category, setCategory] = useState(defaultCategory);
   const [description, setDescription] = useState("");
   const [note, setNote] = useState("");
   const [variants, setVariants] = useState<VariantDraft[]>([
-    defaultVariant("M"),
-    defaultVariant("L"),
-    defaultVariant("XL"),
-    defaultVariant("XXL"),
+    defaultVariant("M", defaultCategory),
+    defaultVariant("L", defaultCategory),
+    defaultVariant("XL", defaultCategory),
+    defaultVariant("XXL", defaultCategory),
   ]);
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [createdProduct, setCreatedProduct] = useState<ProductDetail | null>(null);
@@ -59,6 +81,43 @@ export default function NewProductPage() {
       current.map((variant, currentIndex) =>
         currentIndex === index ? { ...variant, ...patch } : variant,
       ),
+    );
+  }
+
+  function handleCategoryChange(nextCategory: string) {
+    setCategory(nextCategory);
+    const inferredGender = inferGenderFromCategory(nextCategory);
+    if (inferredGender) {
+      setGender(inferredGender);
+    }
+    setVariants((current) =>
+      current.map((variant) => ({
+        ...variant,
+        measurements: applyMeasurementPreset(variant.measurements, nextCategory),
+      })),
+    );
+  }
+
+  function updateMeasurement(
+    variantIndex: number,
+    measurementIndex: number,
+    value: string,
+  ) {
+    setVariants((current) =>
+      current.map((variant, currentIndex) => {
+        if (currentIndex !== variantIndex) {
+          return variant;
+        }
+        const measurements = variant.measurements ?? measurementDraft(category);
+        return {
+          ...variant,
+          measurements: measurements.map((measurement, currentMeasurementIndex) =>
+            currentMeasurementIndex === measurementIndex
+              ? { ...measurement, value }
+              : measurement,
+          ),
+        };
+      }),
     );
   }
 
@@ -83,11 +142,17 @@ export default function NewProductPage() {
             sku: variant.sku.trim(),
             barcode: variant.barcode?.trim() || null,
             size: variant.size.trim(),
-            waist: variant.waist.trim(),
-            hip: variant.hip.trim(),
-            length: variant.length.trim(),
+            waist: variant.waist?.trim() || undefined,
+            hip: variant.hip?.trim() || undefined,
+            length: variant.length?.trim() || undefined,
             price: variant.price.trim(),
             sale_price: variant.sale_price?.trim() || null,
+            measurements: (variant.measurements ?? [])
+              .map((measurement) => ({
+                label: measurement.label.trim(),
+                value: measurement.value.trim(),
+              }))
+              .filter((measurement) => measurement.label && measurement.value),
             stock_on_hand: Number(variant.stock_on_hand) || 0,
             reserved_stock: Number(variant.reserved_stock) || 0,
             status: "draft",
@@ -143,8 +208,6 @@ export default function NewProductPage() {
             ["กลุ่มสินค้า", productGroup, setProductGroup],
             ["ชื่อสินค้า", name, setName],
             ["สี", color, setColor],
-            ["เพศ", gender, setGender],
-            ["หมวดหมู่", category, setCategory],
           ].map(([label, value, setter]) => (
             <label key={label as string} className="block">
               <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
@@ -159,6 +222,37 @@ export default function NewProductPage() {
               />
             </label>
           ))}
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              เพศ
+            </span>
+            <select
+              value={gender}
+              onChange={(event) => setGender(event.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+            >
+              <option value="หญิง">หญิง</option>
+              <option value="ชาย">ชาย</option>
+              <option value="Unisex">Unisex</option>
+              <option value="เด็ก">เด็ก</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              หมวดหมู่
+            </span>
+            <select
+              value={category}
+              onChange={(event) => handleCategoryChange(event.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+            >
+              {productCategoryOptions.map((option) => (
+                <option key={option.id} value={option.th}>
+                  {categoryLabel(option)}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="block sm:col-span-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
               รายละเอียด
@@ -194,7 +288,9 @@ export default function NewProductPage() {
           </div>
           <button
             type="button"
-            onClick={() => setVariants((current) => [...current, defaultVariant()])}
+            onClick={() =>
+              setVariants((current) => [...current, defaultVariant("M", category)])
+            }
             className={actionLinkClassName}
           >
             เพิ่ม SKU
@@ -206,9 +302,9 @@ export default function NewProductPage() {
               <tr>
                 <th className="px-4 py-3">SKU</th>
                 <th className="px-4 py-3">ไซซ์</th>
-                <th className="px-4 py-3">เอว</th>
-                <th className="px-4 py-3">สะโพก</th>
-                <th className="px-4 py-3">ความยาว</th>
+                {categoryMeasurementPreset(category).map((label) => (
+                  <th key={label} className="px-4 py-3">{label}</th>
+                ))}
                 <th className="px-4 py-3">ราคา</th>
                 <th className="px-4 py-3">สต๊อก</th>
                 <th className="px-4 py-3 text-right">จัดการ</th>
@@ -217,7 +313,7 @@ export default function NewProductPage() {
             <tbody className="divide-y divide-zinc-100 bg-white">
               {variants.map((variant, index) => (
                 <tr key={index}>
-                  {(["sku", "size", "waist", "hip", "length", "price"] as const).map((field) => (
+                  {(["sku", "size"] as const).map((field) => (
                     <td key={field} className="px-4 py-3">
                       <input
                         value={String(variant[field] ?? "")}
@@ -228,6 +324,27 @@ export default function NewProductPage() {
                       />
                     </td>
                   ))}
+                  {(variant.measurements ?? measurementDraft(category)).map(
+                    (measurement, measurementIndex) => (
+                      <td key={measurement.label} className="px-4 py-3">
+                        <input
+                          aria-label={`${variant.size} ${measurement.label}`}
+                          value={measurement.value}
+                          onChange={(event) =>
+                            updateMeasurement(index, measurementIndex, event.target.value)
+                          }
+                          className="w-28 rounded-md border border-zinc-200 px-2 py-1.5 text-sm text-zinc-900 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                        />
+                      </td>
+                    ),
+                  )}
+                  <td className="px-4 py-3">
+                    <input
+                      value={String(variant.price ?? "")}
+                      onChange={(event) => updateVariant(index, { price: event.target.value })}
+                      className="w-28 rounded-md border border-zinc-200 px-2 py-1.5 text-sm text-zinc-900 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                    />
+                  </td>
                   <td className="px-4 py-3">
                     <input
                       value={String(variant.stock_on_hand)}

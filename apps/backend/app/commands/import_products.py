@@ -51,6 +51,7 @@ OPTIONAL_COLUMNS = [
 
 CSV_COLUMNS = REQUIRED_COLUMNS + OPTIONAL_COLUMNS
 IMAGE_COLUMNS = ["image_1", "image_2", "image_3"]
+DEFAULT_MEASUREMENT_LABELS = ("เอว", "สะโพก", "ความยาว")
 
 
 @dataclass
@@ -342,6 +343,14 @@ def upsert_variant(session: Session, product: Product, row: ProductRow) -> Produ
     variant.waist = row.waist
     variant.hip = row.hip
     variant.length = row.length
+    variant.measurements = [
+        {"label": label, "value": value}
+        for label, value in zip(
+            DEFAULT_MEASUREMENT_LABELS,
+            [row.waist, row.hip, row.length],
+        )
+        if value
+    ]
     variant.barcode = row.barcode
     variant.price = row.price
     variant.sale_price = row.sale_price

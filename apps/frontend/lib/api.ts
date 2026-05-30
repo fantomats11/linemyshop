@@ -39,6 +39,11 @@ export type Inventory = {
   available_stock: number;
 };
 
+export type MeasurementField = {
+  label: string;
+  value: string;
+};
+
 export type ProductVariant = {
   id: number;
   sku: string;
@@ -47,6 +52,7 @@ export type ProductVariant = {
   waist: string;
   hip: string;
   length: string;
+  measurements: MeasurementField[];
   price: string;
   sale_price: string | null;
   status: string;
@@ -189,9 +195,10 @@ export type CreateProductVariantInput = {
   sku: string;
   barcode?: string | null;
   size: string;
-  waist: string;
-  hip: string;
-  length: string;
+  waist?: string;
+  hip?: string;
+  length?: string;
+  measurements?: MeasurementField[];
   price: string;
   sale_price?: string | null;
   stock_on_hand: number;
@@ -226,6 +233,7 @@ export type UpdateProductVariantInput = Partial<{
   waist: string;
   hip: string;
   length: string;
+  measurements: MeasurementField[];
   price: string;
   sale_price: string | null;
   status: string;

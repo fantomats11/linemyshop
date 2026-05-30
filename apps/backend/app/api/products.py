@@ -55,6 +55,48 @@ image_generation_router = APIRouter(
 )
 LINE_CHANNEL = "line_myshop"
 MOCK_LINE_CHANNEL = "line_myshop_mock"
+DEFAULT_MEASUREMENT_LABELS = ("เอว", "สะโพก", "ความยาว")
+
+
+def normalize_measurements(measurements: list[dict] | None) -> list[dict[str, str]]:
+    normalized: list[dict[str, str]] = []
+    for measurement in measurements or []:
+        label = str(measurement.get("label", "")).strip()
+        value = str(measurement.get("value", "")).strip()
+        if label and value:
+            normalized.append({"label": label, "value": value})
+    return normalized
+
+
+def legacy_measurements(waist: str, hip: str, length: str) -> list[dict[str, str]]:
+    values = [waist, hip, length]
+    return [
+        {"label": label, "value": value}
+        for label, value in zip(DEFAULT_MEASUREMENT_LABELS, values)
+        if value
+    ]
+
+
+def variant_measurements(variant: ProductVariant) -> list[dict[str, str]]:
+    return normalize_measurements(variant.measurements) or legacy_measurements(
+        variant.waist,
+        variant.hip,
+        variant.length,
+    )
+
+
+def legacy_dimensions_from_measurements(
+    measurements: list[dict[str, str]],
+    waist: str | None = None,
+    hip: str | None = None,
+    length: str | None = None,
+) -> tuple[str, str, str]:
+    values = [measurement["value"] for measurement in measurements]
+    return (
+        (waist or (values[0] if len(values) > 0 else "")).strip(),
+        (hip or (values[1] if len(values) > 1 else "")).strip(),
+        (length or (values[2] if len(values) > 2 else "")).strip(),
+    )
 
 
 def repo_root() -> Path:
@@ -303,6 +345,17 @@ def create_product(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="inventory values must be greater than or equal to 0",
             )
+        if not normalize_measurements(
+            [item.model_dump() for item in variant_request.measurements or []]
+        ) and not (
+            (variant_request.waist or "").strip()
+            and (variant_request.hip or "").strip()
+            and (variant_request.length or "").strip()
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="variant measurements are required",
+            )
 
     product = Product(
         product_group=product_group,
@@ -318,14 +371,30 @@ def create_product(
     db.flush()
 
     for variant_request in request.variants:
+        measurements = normalize_measurements(
+            [item.model_dump() for item in variant_request.measurements or []]
+        )
+        if not measurements:
+            measurements = legacy_measurements(
+                (variant_request.waist or "").strip(),
+                (variant_request.hip or "").strip(),
+                (variant_request.length or "").strip(),
+            )
+        waist, hip, length = legacy_dimensions_from_measurements(
+            measurements,
+            variant_request.waist,
+            variant_request.hip,
+            variant_request.length,
+        )
         variant = ProductVariant(
             product_id=product.id,
             sku=variant_request.sku.strip(),
             barcode=(variant_request.barcode or variant_request.sku).strip(),
             size=variant_request.size.strip(),
-            waist=variant_request.waist.strip(),
-            hip=variant_request.hip.strip(),
-            length=variant_request.length.strip(),
+            waist=waist,
+            hip=hip,
+            length=length,
+            measurements=measurements,
             price=variant_request.price,
             sale_price=variant_request.sale_price,
             status=variant_request.status,
@@ -397,6 +466,7 @@ def get_product(product_id: int, db: Session = Depends(get_db)) -> ProductDetail
                 waist=variant.waist,
                 hip=variant.hip,
                 length=variant.length,
+                measurements=variant_measurements(variant),
                 price=variant.price,
                 sale_price=variant.sale_price,
                 status=variant.status,
@@ -1392,6 +1462,7 @@ def variant_to_response(variant: ProductVariant) -> ProductVariantResponse:
         waist=variant.waist,
         hip=variant.hip,
         length=variant.length,
+        measurements=variant_measurements(variant),
         price=variant.price,
         sale_price=variant.sale_price,
         status=variant.status,
@@ -1430,11 +1501,24 @@ def update_product_variant(
         "waist": variant.waist,
         "hip": variant.hip,
         "length": variant.length,
+        "measurements": variant_measurements(variant),
         "price": str(variant.price),
         "sale_price": str(variant.sale_price) if variant.sale_price is not None else None,
         "status": variant.status,
     }
     updates = request.model_dump(exclude_unset=True)
+    if "measurements" in updates:
+        updates["measurements"] = normalize_measurements(updates["measurements"])
+        if updates["measurements"]:
+            waist, hip, length = legacy_dimensions_from_measurements(
+                updates["measurements"],
+                updates.get("waist"),
+                updates.get("hip"),
+                updates.get("length"),
+            )
+            updates.setdefault("waist", waist)
+            updates.setdefault("hip", hip)
+            updates.setdefault("length", length)
     for key, value in updates.items():
         if isinstance(value, str):
             value = value.strip()

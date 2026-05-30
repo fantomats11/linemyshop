@@ -80,6 +80,11 @@ class InventoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class MeasurementField(BaseModel):
+    label: str
+    value: str
+
+
 class ProductVariantResponse(BaseModel):
     id: int
     sku: str
@@ -88,6 +93,7 @@ class ProductVariantResponse(BaseModel):
     waist: str
     hip: str
     length: str
+    measurements: list[MeasurementField]
     price: Decimal
     sale_price: Decimal | None
     status: str
@@ -183,6 +189,7 @@ class UpdateProductVariantRequest(BaseModel):
     waist: str | None = None
     hip: str | None = None
     length: str | None = None
+    measurements: list[MeasurementField] | None = None
     price: Decimal | None = None
     sale_price: Decimal | None = None
     status: str | None = None
@@ -197,9 +204,10 @@ class CreateProductVariantRequest(BaseModel):
     sku: str
     barcode: str | None = None
     size: str
-    waist: str
-    hip: str
-    length: str
+    waist: str | None = None
+    hip: str | None = None
+    length: str | None = None
+    measurements: list[MeasurementField] | None = None
     price: Decimal
     sale_price: Decimal | None = None
     stock_on_hand: int = 0

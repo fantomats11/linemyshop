@@ -40,6 +40,7 @@ MOCK_CHANNEL = "line_myshop_mock"
 PRODUCTION_SYNC_CONFIRMATION = "CONFIRM PRODUCTION SYNC"
 PRODUCTION_PUBLISH_CONFIRMATION = "CONFIRM PUBLISH"
 PRODUCTION_HIDE_CONFIRMATION = "CONFIRM HIDE"
+DEFAULT_MEASUREMENT_LABELS = ("เอว", "สะโพก", "ความยาว")
 
 
 def now_utc() -> datetime:
@@ -48,6 +49,27 @@ def now_utc() -> datetime:
 
 def decimal_to_string(value: Decimal | None) -> str | None:
     return str(value) if value is not None else None
+
+
+def normalize_measurements(measurements: list[dict] | None) -> list[dict[str, str]]:
+    normalized: list[dict[str, str]] = []
+    for measurement in measurements or []:
+        label = str(measurement.get("label", "")).strip()
+        value = str(measurement.get("value", "")).strip()
+        if label and value:
+            normalized.append({"label": label, "value": value})
+    return normalized
+
+
+def variant_measurements(variant: ProductVariant) -> list[dict[str, str]]:
+    return normalize_measurements(variant.measurements) or [
+        {"label": label, "value": value}
+        for label, value in zip(
+            DEFAULT_MEASUREMENT_LABELS,
+            [variant.waist, variant.hip, variant.length],
+        )
+        if value
+    ]
 
 
 def build_product_payload(product: Product) -> dict[str, Any]:
@@ -88,6 +110,7 @@ def build_product_payload(product: Product) -> dict[str, Any]:
                 "waist": variant.waist,
                 "hip": variant.hip,
                 "length": variant.length,
+                "measurements": variant_measurements(variant),
                 "price": decimal_to_string(variant.price),
                 "sale_price": decimal_to_string(variant.sale_price),
                 "available_stock": (

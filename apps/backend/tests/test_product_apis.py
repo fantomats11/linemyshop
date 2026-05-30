@@ -85,6 +85,11 @@ def test_get_product_detail(client: TestClient) -> None:
     assert product["images"][0]["is_main"] is False
     assert len(product["variants"]) == 2
     assert product["variants"][0]["inventory"]["stock_on_hand"] in {3, 5}
+    assert product["variants"][0]["measurements"] == [
+        {"label": "เอว", "value": product["variants"][0]["waist"]},
+        {"label": "สะโพก", "value": product["variants"][0]["hip"]},
+        {"label": "ความยาว", "value": product["variants"][0]["length"]},
+    ]
 
 
 def test_create_product_from_frontend_intake(client: TestClient) -> None:
@@ -105,6 +110,11 @@ def test_create_product_from_frontend_intake(client: TestClient) -> None:
                     "waist": "26-28",
                     "hip": "34-36",
                     "length": "40",
+                    "measurements": [
+                        {"label": "เอว", "value": "26-28"},
+                        {"label": "สะโพก", "value": "34-36"},
+                        {"label": "ความยาว", "value": "40"},
+                    ],
                     "price": "1750",
                     "stock_on_hand": 3,
                 }
@@ -117,7 +127,50 @@ def test_create_product_from_frontend_intake(client: TestClient) -> None:
     assert product["product_group"] == "jeans-intake"
     assert product["status"] == "draft"
     assert product["variants"][0]["sku"] == "INTAKE-M"
+    assert product["variants"][0]["measurements"] == [
+        {"label": "เอว", "value": "26-28"},
+        {"label": "สะโพก", "value": "34-36"},
+        {"label": "ความยาว", "value": "40"},
+    ]
     assert product["variants"][0]["inventory"]["stock_on_hand"] == 3
+
+
+def test_create_product_accepts_dynamic_measurements(client: TestClient) -> None:
+    response = client.post(
+        "/products",
+        json={
+            "product_group": "knit-intake",
+            "name": "เสื้อไหมพรม Intake",
+            "color": "ครีม",
+            "gender": "หญิง",
+            "category": "แฟชั่นผู้หญิง>เสื้อ",
+            "variants": [
+                {
+                    "sku": "KNIT-M",
+                    "size": "M",
+                    "measurements": [
+                        {"label": "รอบอก", "value": "36-38"},
+                        {"label": "ไหล่", "value": "15"},
+                        {"label": "ความยาว", "value": "23"},
+                    ],
+                    "price": "1290",
+                    "stock_on_hand": 3,
+                }
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    product = response.json()
+    variant = product["variants"][0]
+    assert variant["measurements"] == [
+        {"label": "รอบอก", "value": "36-38"},
+        {"label": "ไหล่", "value": "15"},
+        {"label": "ความยาว", "value": "23"},
+    ]
+    assert variant["waist"] == "36-38"
+    assert variant["hip"] == "15"
+    assert variant["length"] == "23"
 
 
 def test_approve_product_creates_audit_log(
