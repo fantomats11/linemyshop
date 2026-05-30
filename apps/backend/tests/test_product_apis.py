@@ -66,6 +66,7 @@ def test_list_products(client: TestClient) -> None:
     assert products[0]["status"] == "draft"
     assert products[0]["variant_count"] == 2
     assert products[0]["total_stock"] == 8
+    assert products[0]["total_available_stock"] == 8
     assert products[0]["image_url"] is None
 
 

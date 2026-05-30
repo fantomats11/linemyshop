@@ -77,6 +77,7 @@ def build_product_summary(
     product: Product,
     variant_count: int,
     total_stock: int,
+    total_available_stock: int,
     image_url: str | None,
     channel_product: ChannelProduct | None = None,
 ) -> ProductSummaryResponse:
@@ -90,6 +91,7 @@ def build_product_summary(
         status=product.status,
         variant_count=variant_count,
         total_stock=total_stock,
+        total_available_stock=total_available_stock,
         image_url=image_url,
         created_at=product.created_at,
         updated_at=product.updated_at,
@@ -133,6 +135,11 @@ def product_summary_by_id(session: Session, product_id: int) -> ProductSummaryRe
         .join(ProductVariant, InventoryBalance.variant_id == ProductVariant.id)
         .where(ProductVariant.product_id == product.id)
     )
+    total_available_stock = session.scalar(
+        select(func.coalesce(func.sum(InventoryBalance.available_stock), 0))
+        .join(ProductVariant, InventoryBalance.variant_id == ProductVariant.id)
+        .where(ProductVariant.product_id == product.id)
+    )
     image_url = session.scalar(
         select(ProductImage.url)
         .where(ProductImage.product_id == product.id)
@@ -146,6 +153,7 @@ def product_summary_by_id(session: Session, product_id: int) -> ProductSummaryRe
         product=product,
         variant_count=variant_count or 0,
         total_stock=total_stock or 0,
+        total_available_stock=total_available_stock or 0,
         image_url=image_url,
         channel_product=get_product_channel_mapping(session, product.id),
     )

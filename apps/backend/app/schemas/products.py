@@ -106,6 +106,7 @@ class ProductSummaryResponse(BaseModel):
     status: str
     variant_count: int
     total_stock: int
+    total_available_stock: int
     image_url: str | None
     created_at: datetime
     updated_at: datetime

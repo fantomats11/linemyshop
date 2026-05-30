@@ -648,6 +648,41 @@ def test_real_client_updates_product_with_patch(
     assert "variants" not in captured_payloads[0]
 
 
+def test_real_client_updates_visibility_with_display_status_endpoint(
+    session: Session,
+) -> None:
+    captured_methods: list[str] = []
+    captured_paths: list[str] = []
+    captured_payloads: list[dict] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        import json
+
+        captured_methods.append(request.method)
+        captured_paths.append(request.url.path)
+        captured_payloads.append(json.loads(request.content.decode("utf-8")))
+        return httpx.Response(
+            200,
+            json={"data": {"id": "line_product_1", "isDisplay": True}},
+        )
+
+    settings = Settings(
+        line_myshop_mock_mode=False,
+        line_myshop_base_url="https://line.example.test",
+        line_myshop_api_key="secret-key",
+        line_myshop_update_product_path="/myshop/v1/products/{external_product_id}",
+    )
+    http_client = httpx.Client(transport=httpx.MockTransport(handler))
+    real_client = LineMyShopRealClient(session, settings, http_client=http_client)
+
+    response = real_client.update_visibility("line_product_1", True)
+
+    assert response["data"]["isDisplay"] is True
+    assert captured_methods == ["POST"]
+    assert captured_paths == ["/myshop/v1/products/line_product_1/display-status/onsale"]
+    assert captured_payloads == [{}]
+
+
 def test_real_client_requires_category_id_for_oaplus_payload(
     session: Session,
 ) -> None:

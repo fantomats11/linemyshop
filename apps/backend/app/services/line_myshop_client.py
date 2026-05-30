@@ -217,12 +217,16 @@ class LineMyShopRealClient:
         self, external_product_id: str, is_display: bool
     ) -> dict[str, Any]:
         self._validate_settings()
+        display_status = "onsale" if is_display else "hide"
         return self._request(
-            method="PATCH",
-            path=self.settings.line_myshop_update_product_path.format(
-                external_product_id=external_product_id
+            method="POST",
+            path=(
+                self.settings.line_myshop_update_product_path.format(
+                    external_product_id=external_product_id
+                ).rstrip("/")
+                + f"/display-status/{display_status}"
             ),
-            payload={"isDisplay": is_display},
+            payload={},
         )
 
     def build_outbound_product_payload(self, payload: dict[str, Any]) -> dict[str, Any]:

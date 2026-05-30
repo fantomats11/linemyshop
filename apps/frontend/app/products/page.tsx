@@ -35,6 +35,8 @@ import {
   TableShell,
 } from "../../lib/ui";
 
+const LOW_STOCK_THRESHOLD = 2;
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -181,6 +183,12 @@ export default function ProductsPage() {
   }
 
   async function handlePublish(productId: number) {
+    const product = products.find((item) => item.id === productId);
+    if (product && product.total_available_stock <= 0) {
+      setError("เปิดขายไม่ได้: สินค้านี้ไม่มี stock ที่ขายได้");
+      return;
+    }
+
     const confirm = window.prompt("พิมพ์ CONFIRM PUBLISH เพื่อเปิดขายบน LINE MyShop");
     if (confirm !== "CONFIRM PUBLISH") {
       return;
@@ -259,6 +267,17 @@ export default function ProductsPage() {
   }
 
   async function handleBatchPublish() {
+    const blockedProducts = products.filter(
+      (product) =>
+        selectedProductIds.includes(product.id) && product.total_available_stock <= 0,
+    );
+    if (blockedProducts.length > 0) {
+      setError(
+        `เปิดขายไม่ได้: มีสินค้า stock ขายได้ 0 จำนวน ${blockedProducts.length} รายการ`,
+      );
+      return;
+    }
+
     const confirm = window.prompt("พิมพ์ CONFIRM PUBLISH เพื่อเปิดขายสินค้าที่เลือก");
     if (confirm !== "CONFIRM PUBLISH") {
       return;
@@ -306,6 +325,38 @@ export default function ProductsPage() {
     await loadProducts();
   }
 
+  async function handleHideProducts(productIds: number[], reason: string) {
+    if (productIds.length === 0) {
+      return;
+    }
+
+    const confirm = window.prompt(
+      `พิมพ์ CONFIRM HIDE เพื่อซ่อนสินค้า ${productIds.length} รายการบน LINE MyShop`,
+    );
+    if (confirm !== "CONFIRM HIDE") {
+      return;
+    }
+
+    setError(null);
+    setLineActionResult(null);
+    for (const productId of productIds) {
+      setPendingProductId(productId);
+      try {
+        setLineActionResult(await hideProduct(productId, confirm, reason));
+      } catch (caughtError) {
+        setError(
+          caughtError instanceof ApiError
+            ? `สินค้า ${productId}: ${caughtError.message}`
+            : `สินค้า ${productId}: ไม่สามารถซ่อนได้`,
+        );
+        break;
+      }
+    }
+    setPendingProductId(null);
+    setSelectedProductIds([]);
+    await loadProducts();
+  }
+
   async function handleConfirmProductionSync() {
     if (productionSyncProductId === null) {
       return;
@@ -319,6 +370,21 @@ export default function ProductsPage() {
   const approvedCount = products.filter((product) => product.status === "approved").length;
   const rejectedCount = products.filter((product) => product.status === "rejected").length;
   const totalStock = products.reduce((sum, product) => sum + product.total_stock, 0);
+  const totalAvailableStock = products.reduce(
+    (sum, product) => sum + product.total_available_stock,
+    0,
+  );
+  const outOfStockProducts = products.filter(
+    (product) => product.total_available_stock <= 0,
+  );
+  const lowStockProducts = products.filter(
+    (product) =>
+      product.total_available_stock > 0
+      && product.total_available_stock <= LOW_STOCK_THRESHOLD,
+  );
+  const visibleOutOfStockProducts = outOfStockProducts.filter(
+    (product) => product.is_display === true,
+  );
   const pageSize = 10;
   const filteredProducts = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -347,6 +413,9 @@ export default function ProductsPage() {
       }
       if (sortKey === "stock_desc") {
         return second.total_stock - first.total_stock;
+      }
+      if (sortKey === "available_stock_asc") {
+        return first.total_available_stock - second.total_available_stock;
       }
       if (sortKey === "variants_desc") {
         return second.variant_count - first.variant_count;
@@ -467,13 +536,59 @@ export default function ProductsPage() {
         <EmptyPanel>ยังไม่มีสินค้าในระบบ</EmptyPanel>
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
             <StatCard label="สินค้าทั้งหมด" value={products.length} />
             <StatCard label="รออนุมัติ" value={draftCount} tone="amber" />
             <StatCard label="อนุมัติแล้ว" value={approvedCount} tone="emerald" />
             <StatCard label="ปฏิเสธแล้ว" value={rejectedCount} tone="rose" />
             <StatCard label="Stock รวม" value={totalStock} tone="sky" />
+            <StatCard label="ขายได้รวม" value={totalAvailableStock} tone="emerald" />
           </div>
+
+          {visibleOutOfStockProducts.length > 0 || lowStockProducts.length > 0 ? (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 shadow-sm">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div className="font-semibold">สต๊อกต้องดูแล</div>
+                  <p className="mt-1 text-amber-900">
+                    {visibleOutOfStockProducts.length > 0
+                      ? `มีสินค้าเปิดขายแต่ขายได้ 0 จำนวน ${visibleOutOfStockProducts.length} รายการ`
+                      : "ไม่มีสินค้าเปิดขายที่หมดสต๊อก"}
+                    {lowStockProducts.length > 0
+                      ? ` และมีสินค้าใกล้หมด ${lowStockProducts.length} รายการ`
+                      : ""}
+                  </p>
+                </div>
+                {visibleOutOfStockProducts.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSelectedProductIds(
+                          visibleOutOfStockProducts.map((product) => product.id),
+                        )
+                      }
+                      className={actionLinkClassName}
+                    >
+                      เลือกสินค้าที่หมด
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        void handleHideProducts(
+                          visibleOutOfStockProducts.map((product) => product.id),
+                          "hidden because available stock is zero",
+                        )
+                      }
+                      className={rejectButtonClassName}
+                    >
+                      ซ่อนสินค้าที่หมด
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
 
           <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_180px_220px]">
             <label className="block">
@@ -515,6 +630,7 @@ export default function ProductsPage() {
                 <option value="name_asc">ชื่อสินค้า A-Z</option>
                 <option value="status_asc">สถานะ</option>
                 <option value="stock_desc">สต๊อกมากสุด</option>
+                <option value="available_stock_asc">ขายได้น้อยสุด</option>
                 <option value="variants_desc">จำนวน SKU มากสุด</option>
               </select>
             </label>
@@ -614,7 +730,7 @@ export default function ProductsPage() {
                   <th className="px-4 py-3">หน้าร้าน</th>
                   <th className="px-4 py-3">ส่งล่าสุด</th>
                   <th className="px-4 py-3 text-right">จำนวน SKU</th>
-                  <th className="px-4 py-3 text-right">สต๊อก</th>
+                  <th className="px-4 py-3 text-right">ขายได้/สต๊อก</th>
                   <th className="px-4 py-3">อัปเดตล่าสุด</th>
                   <th className="px-4 py-3 text-right">จัดการ</th>
                 </tr>
@@ -623,6 +739,18 @@ export default function ProductsPage() {
                 {paginatedProducts.map((product) => {
                   const isPending = pendingProductId === product.id;
                   const shouldRenderImage = isRenderableProductImageUrl(product.image_url);
+                  const stockTone =
+                    product.total_available_stock <= 0
+                      ? "border-rose-200 bg-rose-50 text-rose-700"
+                      : product.total_available_stock <= LOW_STOCK_THRESHOLD
+                        ? "border-amber-200 bg-amber-50 text-amber-800"
+                        : "border-emerald-200 bg-emerald-50 text-emerald-700";
+                  const stockLabel =
+                    product.total_available_stock <= 0
+                      ? "หมด"
+                      : product.total_available_stock <= LOW_STOCK_THRESHOLD
+                        ? "ใกล้หมด"
+                        : "พร้อมขาย";
                   return (
                     <tr key={product.id} className="hover:bg-sky-50/40">
                       <td className="px-4 py-3">
@@ -691,7 +819,16 @@ export default function ProductsPage() {
                         {product.variant_count}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-right text-zinc-700">
-                        {product.total_stock}
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="font-semibold">
+                            {product.total_available_stock}/{product.total_stock}
+                          </span>
+                          <span
+                            className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold ${stockTone}`}
+                          >
+                            {stockLabel}
+                          </span>
+                        </div>
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-zinc-600">
                         {formatDateTime(product.updated_at)}
@@ -756,7 +893,16 @@ export default function ProductsPage() {
                               ) : (
                                 <button
                                   type="button"
-                                  disabled={isPending || product.status !== "approved"}
+                                  disabled={
+                                    isPending
+                                    || product.status !== "approved"
+                                    || product.total_available_stock <= 0
+                                  }
+                                  title={
+                                    product.total_available_stock <= 0
+                                      ? "ไม่มี stock ที่ขายได้"
+                                      : undefined
+                                  }
                                   onClick={() => void handlePublish(product.id)}
                                   className={approveButtonClassName}
                                 >

@@ -10,6 +10,7 @@ export type ProductSummary = {
   status: string;
   variant_count: number;
   total_stock: number;
+  total_available_stock: number;
   image_url: string | null;
   created_at: string;
   updated_at: string;
