@@ -536,6 +536,13 @@ export function runCsvImport(validProductsPath: string, dryRun = false) {
   });
 }
 
+export function runUploadedCsvImport(file: File, dryRun = false) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("dry_run", String(dryRun));
+  return uploadRequest<RunImportResponse>("/imports/run-csv", formData);
+}
+
 export function listImportErrors(importBatchId: string | number) {
   return request<ImportError[]>(`/imports/${importBatchId}/errors`);
 }

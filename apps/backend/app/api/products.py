@@ -1,6 +1,7 @@
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
@@ -702,10 +703,6 @@ def upload_product_reference_images(
             detail="files cannot be empty",
         )
 
-    upload_dir = (
-        repo_root() / "data" / "input" / "product-references" / f"product-{product.id}"
-    )
-    upload_dir.mkdir(parents=True, exist_ok=True)
     created_images: list[ProductImage] = []
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     settings = get_settings()
@@ -719,25 +716,27 @@ def upload_product_reference_images(
         or 0
     ) + 1
 
-    for index, file in enumerate(files):
-        if not file.filename:
-            continue
-        filename = f"{timestamp}_{index + 1}_{safe_uploaded_filename(file.filename)}"
-        destination = upload_dir / filename
-        with destination.open("wb") as output_file:
-            shutil.copyfileobj(file.file, output_file)
-        media_response = wordpress_client.upload_media(destination)
-        image = ProductImage(
-            product_id=product.id,
-            url=media_response["source_url"],
-            position=next_position + index,
-            status="draft",
-            image_type="brief",
-            is_main=False,
-            review_note="reference image uploaded by staff to WordPress Media",
-        )
-        db.add(image)
-        created_images.append(image)
+    with TemporaryDirectory(prefix=f"line-myshop-reference-product-{product.id}-") as temp_dir:
+        upload_dir = Path(temp_dir)
+        for index, file in enumerate(files):
+            if not file.filename:
+                continue
+            filename = f"{timestamp}_{index + 1}_{safe_uploaded_filename(file.filename)}"
+            destination = upload_dir / filename
+            with destination.open("wb") as output_file:
+                shutil.copyfileobj(file.file, output_file)
+            media_response = wordpress_client.upload_media(destination)
+            image = ProductImage(
+                product_id=product.id,
+                url=media_response["source_url"],
+                position=next_position + index,
+                status="draft",
+                image_type="brief",
+                is_main=False,
+                review_note="reference image uploaded by staff to WordPress Media",
+            )
+            db.add(image)
+            created_images.append(image)
 
     db.add(
         AuditLog(
@@ -1017,15 +1016,10 @@ def run_image_generation_job(
     image_client = FalImageGenerationClient(db, settings, repo_root())
     wordpress_client = WordPressMediaClient(settings)
     reference_urls = [image.url for image in usable_reference_images]
-    generated_dir = (
-        repo_root()
-        / "data"
-        / "output"
-        / "generated-product-images"
-        / f"product-{product.id}"
-        / f"job-{job.id}"
+    generated_temp_dir = TemporaryDirectory(
+        prefix=f"line-myshop-generated-product-{product.id}-job-{job.id}-"
     )
-    generated_dir.mkdir(parents=True, exist_ok=True)
+    generated_dir = Path(generated_temp_dir.name)
 
     job.status = "running"
     job.started_at = datetime.now(timezone.utc)
@@ -1099,7 +1093,6 @@ def run_image_generation_job(
                         "slot_position": slot_position,
                         "image_type": image_type,
                         "fal_url": generated_url,
-                        "local_path": local_path.relative_to(repo_root()).as_posix(),
                         "wordpress_url": image.url,
                         "status": image.status,
                         "is_main": image.is_main,
@@ -1145,6 +1138,8 @@ def run_image_generation_job(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"image generation failed: {exc}",
         ) from exc
+    finally:
+        generated_temp_dir.cleanup()
 
 
 @image_generation_router.post(
@@ -1191,8 +1186,10 @@ def upload_generated_images_for_job(
                 detail="image_types must be one of: product, lifestyle, detail, size_chart",
             )
 
-    temp_dir = repo_root() / "data" / "output" / "generated-upload-temp" / f"job-{job.id}"
-    temp_dir.mkdir(parents=True, exist_ok=True)
+    upload_temp_dir = TemporaryDirectory(
+        prefix=f"line-myshop-generated-upload-job-{job.id}-"
+    )
+    temp_dir = Path(upload_temp_dir.name)
     settings = get_settings()
     wordpress_client = WordPressMediaClient(settings)
     start_position = (
@@ -1281,6 +1278,8 @@ def upload_generated_images_for_job(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"generated image upload failed: {exc}",
         ) from exc
+    finally:
+        upload_temp_dir.cleanup()
 
 
 @router.post("/{product_id}/images", response_model=ProductImageResponse)

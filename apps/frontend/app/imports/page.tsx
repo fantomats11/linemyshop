@@ -7,7 +7,7 @@ import {
   ImportBatch,
   listImports,
   RunImportResponse,
-  runCsvImport,
+  runUploadedCsvImport,
   validateCsvImport,
 } from "../../lib/api";
 import { formatDateTime } from "../../lib/format";
@@ -76,16 +76,16 @@ export default function ImportsPage() {
   }
 
   async function handleRunImport(dryRun: boolean) {
-    const validProductsPath = validationResult?.output_files.valid_products;
-    if (!validProductsPath) {
-      setError("ยังไม่มี valid_products.csv จากการ validate");
+    if (!selectedFile) {
+      setError("กรุณาเลือกไฟล์ CSV");
       return;
     }
     setIsImportActionLoading(true);
     setError(null);
     setImportResult(null);
     try {
-      setImportResult(await runCsvImport(validProductsPath, dryRun));
+      const result = await runUploadedCsvImport(selectedFile, dryRun);
+      setImportResult(result);
       await loadImports();
     } catch (caughtError) {
       setError(
@@ -156,8 +156,8 @@ export default function ImportsPage() {
               <div><dt className="text-xs opacity-70">ข้อผิดพลาด</dt><dd className="font-semibold">{validationResult.total_errors}</dd></div>
               <div><dt className="text-xs opacity-70">คำเตือน</dt><dd className="font-semibold">{validationResult.total_warnings}</dd></div>
             </dl>
-            <div className="mt-3 break-all text-xs">
-              valid_products.csv: {validationResult.output_files.valid_products}
+            <div className="mt-3 text-xs">
+              ระบบจะนำเข้าโดยอัปโหลดไฟล์เดิมอีกครั้ง ไม่พึ่ง path local จากรอบตรวจไฟล์
             </div>
           </div>
         ) : null}

@@ -795,3 +795,51 @@ def test_list_imports_and_errors(client: TestClient, session: Session) -> None:
 
     assert errors_response.status_code == 200
     assert errors_response.json() == []
+
+
+def test_run_uploaded_import_csv_does_not_require_local_validation_path(
+    client: TestClient,
+    session: Session,
+    tmp_path: Path,
+) -> None:
+    csv_path = tmp_path / "production-import.csv"
+    csv_path.write_text(
+        """product_group,product_name,color,gender,category,price,sale_price,size,waist,hip,length,sku,barcode,stock,image_1,image_2,image_3,description,note,status
+prod-import,เสื้อ Production,ครีม,หญิง,แฟชั่นผู้หญิง>เสื้อ,1290,,M,36-38,14,23,PROD-M,,3,https://example.com/prod.jpg,,,รายละเอียด,note,draft
+""",
+        encoding="utf-8",
+    )
+
+    with csv_path.open("rb") as csv_file:
+        dry_run_response = client.post(
+            "/imports/run-csv",
+            files={"file": ("production-import.csv", csv_file, "text/csv")},
+            data={"dry_run": "true"},
+        )
+
+    assert dry_run_response.status_code == 200
+    assert dry_run_response.json()["products_created"] == 1
+    assert (
+        session.scalar(
+            select(ImportBatch).where(ImportBatch.source_file == "production-import.csv")
+        )
+        is None
+    )
+
+    with csv_path.open("rb") as csv_file:
+        import_response = client.post(
+            "/imports/run-csv",
+            files={"file": ("production-import.csv", csv_file, "text/csv")},
+            data={"dry_run": "false"},
+        )
+
+    assert import_response.status_code == 200
+    body = import_response.json()
+    assert body["source_file"] == "production-import.csv"
+    assert body["products_created"] == 1
+    assert (
+        session.scalar(
+            select(ImportBatch).where(ImportBatch.source_file == "production-import.csv")
+        )
+        is not None
+    )
