@@ -484,6 +484,12 @@ export function rejectProductImage(imageId: string | number, reviewNote?: string
   });
 }
 
+export function promoteReferenceImage(imageId: string | number) {
+  return request<ProductImage>(`/product-images/${imageId}/promote-reference`, {
+    method: "POST",
+  });
+}
+
 export function setMainProductImage(imageId: string | number) {
   return request<ProductImage>(`/product-images/${imageId}/set-main`, {
     method: "POST",

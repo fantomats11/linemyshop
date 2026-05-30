@@ -359,6 +359,42 @@ def test_image_generation_brief_returns_standard_slots(client: TestClient) -> No
     assert body["slots"][4]["image_type"] == "size_chart"
 
 
+def test_image_generation_brief_uses_top_garment_prompt(client: TestClient) -> None:
+    response = client.post(
+        "/products",
+        json={
+            "product_group": "knit-prompt",
+            "name": "เสื้อไหมพรมคอเต่า",
+            "color": "ครีม",
+            "gender": "หญิง",
+            "category": "แฟชั่นผู้หญิง>เสื้อ",
+            "variants": [
+                {
+                    "sku": "KNIT-M",
+                    "size": "M",
+                    "measurements": [
+                        {"label": "รอบอก", "value": "36-38"},
+                        {"label": "ไหล่", "value": "14"},
+                        {"label": "ความยาว", "value": "23"},
+                    ],
+                    "price": "1290",
+                    "stock_on_hand": 3,
+                }
+            ],
+        },
+    )
+    product_id = response.json()["id"]
+
+    brief = client.get(f"/products/{product_id}/image-generation-brief").json()
+    prompt_text = " ".join(slot["prompt"] for slot in brief["slots"])
+
+    assert "upper-body" in prompt_text
+    assert "knit texture" in prompt_text
+    assert "jeans" not in prompt_text
+    assert "denim" not in prompt_text
+    assert "waist-down" not in prompt_text
+
+
 def test_create_image_generation_job(client: TestClient, session: Session) -> None:
     product_id = client.get("/products").json()[0]["id"]
 
@@ -495,6 +531,45 @@ def test_reject_product_image_creates_audit_log(
         "image_type": "product",
         "review_note": "รูปไม่ชัด",
     }
+
+
+def test_promote_reference_image_uploads_and_sets_main(
+    client: TestClient,
+    session: Session,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    product_id = client.get("/products").json()[0]["id"]
+    image_path = tmp_path / "reference.jpg"
+    image_path.write_bytes(b"fake image bytes")
+    with image_path.open("rb") as image_file:
+        reference_image = client.post(
+            f"/products/{product_id}/reference-images",
+            files={"files": ("reference.jpg", image_file, "image/jpeg")},
+        ).json()[0]
+
+    class FakeWordPressMediaClient:
+        def __init__(self, *_args, **_kwargs) -> None:
+            pass
+
+        def upload_media(self, file_path: Path) -> dict:
+            return {"source_url": f"https://cdn.example.test/{file_path.name}"}
+
+    monkeypatch.setattr(products_api, "WordPressMediaClient", FakeWordPressMediaClient)
+
+    response = client.post(f"/product-images/{reference_image['id']}/promote-reference")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["image_type"] == "product"
+    assert body["status"] == "approved"
+    assert body["is_main"] is True
+    assert body["url"].startswith("https://cdn.example.test/")
+    product_images = session.scalars(
+        select(ProductImage).where(ProductImage.product_id == product_id)
+    ).all()
+    assert any(image.image_type == "brief" for image in product_images)
+    assert any(image.image_type == "product" and image.is_main for image in product_images)
 
 
 def test_set_approved_image_as_main(client: TestClient) -> None:

@@ -20,6 +20,7 @@ import {
   ProductSyncReadiness,
   ProductSyncResponse,
   previewProductSync,
+  promoteReferenceImage,
   publishProduct,
   rejectProduct,
   rejectProductImage,
@@ -147,6 +148,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await approveProduct(productId);
       await loadProduct();
       await loadImageGenerationBrief();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -172,6 +174,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await rejectProduct(productId, reason.trim());
       await loadProduct();
       await loadImageGenerationBrief();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -398,6 +401,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       setImagePosition(product ? String(product.images.length + 2) : "1");
       setImageMessage("เพิ่มรูปสินค้าแล้ว รอการตรวจและอนุมัติ");
       await loadProduct();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -418,6 +422,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await approveProductImage(imageId, reviewNote);
       setImageMessage("อนุมัติรูปสินค้าแล้ว");
       await loadProduct();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -438,6 +443,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await rejectProductImage(imageId, reviewNote);
       setImageMessage("ปฏิเสธรูปสินค้าแล้ว");
       await loadProduct();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -457,6 +463,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
       await setMainProductImage(imageId);
       setImageMessage("ตั้งรูปหลักแล้ว");
       await loadProduct();
+      await loadSyncOperations();
     } catch (caughtError) {
       setError(
         caughtError instanceof ApiError
@@ -480,6 +487,27 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
         caughtError instanceof ApiError
           ? caughtError.message
           : "ไม่สามารถสร้าง image generation job ได้",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handlePromoteReferenceImage(imageId: number) {
+    setIsSubmitting(true);
+    setError(null);
+    setImageMessage(null);
+    try {
+      await promoteReferenceImage(imageId);
+      setImageMessage("ใช้รูปอ้างอิงเป็นรูปสินค้าหลักแล้ว");
+      await loadProduct();
+      await loadImageGenerationBrief();
+      await loadSyncOperations();
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof ApiError
+          ? caughtError.message
+          : "ไม่สามารถใช้รูปอ้างอิงเป็นรูปสินค้าได้",
       );
     } finally {
       setIsSubmitting(false);
@@ -1076,7 +1104,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
             {imageGenerationJob ? (
               <div className="mt-4 space-y-3">
                 <div className="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-950">
-                  งาน #{imageGenerationJob.id} · {statusLabel(imageGenerationJob.status)}
+                  งานสร้างรูป #{imageGenerationJob.id} · {statusLabel(imageGenerationJob.status)}
                 </div>
                 <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
                   <input
@@ -1098,7 +1126,7 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                   </button>
                 </div>
                 <p className="text-xs text-zinc-500">
-                  ปุ่ม fal.ai จะสร้างรูปตามแผนด้วยค่า medium/square/jpeg ส่วนช่องอัปโหลดใช้เมื่อมีไฟล์จากช่องทางอื่น รูปทั้งหมดจะเป็นแบบร่าง ต้องตรวจอนุมัติและตั้งรูปหลักก่อนส่งขึ้น LINE
+                  เลขงานคือรหัสคิวสร้างรูป ไม่ใช่ลำดับรูปสินค้า ปุ่ม fal.ai จะสร้างรูปตามแผนด้วยค่า medium/square/jpeg ส่วนช่องอัปโหลดใช้เมื่อมีไฟล์จากช่องทางอื่น รูปทั้งหมดจะเป็นแบบร่าง ต้องตรวจอนุมัติและตั้งรูปหลักก่อนส่งขึ้น LINE
                 </p>
               </div>
             ) : null}
@@ -1216,6 +1244,8 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
               {product.images.map((image) => {
                 const canPreview = renderableImageUrls.includes(image.url);
                 const canApprove = image.image_type !== "brief" && image.status !== "approved";
+                const canPromoteReference =
+                  image.image_type === "brief" && image.status !== "rejected";
                 const canSetMain =
                   image.image_type === "product" && image.status === "approved" && !image.is_main;
                 return (
@@ -1248,6 +1278,16 @@ export default function ProductDetailClient({ productId }: ProductDetailPageProp
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
+                        {canPromoteReference ? (
+                          <button
+                            type="button"
+                            disabled={isSubmitting}
+                            onClick={() => void handlePromoteReferenceImage(image.id)}
+                            className={approveButtonClassName}
+                          >
+                            ใช้เป็นรูปสินค้า
+                          </button>
+                        ) : null}
                         {canApprove ? (
                           <button
                             type="button"

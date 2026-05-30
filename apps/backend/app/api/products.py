@@ -1,6 +1,7 @@
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy import func, select
@@ -113,6 +114,81 @@ def safe_generated_filename(value: str) -> str:
         for character in value.strip()
     )
     return "-".join(part for part in filename.split("-") if part) or "image"
+
+
+def is_public_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def resolve_workspace_file(value: str) -> Path:
+    root = repo_root().resolve()
+    path = (root / value).resolve()
+    if not path.is_relative_to(root):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="image path must be inside workspace",
+        )
+    if not path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="reference image file not found",
+        )
+    return path
+
+
+def image_prompt_profile(product: Product) -> dict[str, str]:
+    text = f"{product.category} {product.name}".lower()
+    if "รองเท้า" in text:
+        return {
+            "subject": "single pair of shoes only, product centered",
+            "detail": "show material texture, sole, stitching, and finish",
+            "angle": "side, back, or angled view of the shoes only",
+            "lifestyle_title": "Lifestyle foot-level",
+            "lifestyle": "foot-level lifestyle image, focus on shoe fit and styling",
+            "fit_detail": "show material, sole, and comfort detail",
+        }
+    if "กระเป๋า" in text:
+        return {
+            "subject": "single bag only, product centered",
+            "detail": "show material texture, hardware, zipper, strap, and stitching",
+            "angle": "front, back, or angled view of the bag only",
+            "lifestyle_title": "Lifestyle carry view",
+            "lifestyle": "model carrying bag lifestyle image, focus on size and styling",
+            "fit_detail": "show material, hardware, strap, and pocket detail",
+        }
+    if any(keyword in text for keyword in ("กางเกง", "กระโปรง")):
+        return {
+            "subject": "single garment only, product centered",
+            "detail": "show fabric texture, stitching, waistband, and fit details",
+            "angle": "back or angled view of the garment only",
+            "lifestyle_title": "Lifestyle model lower-body",
+            "lifestyle": "lower-body model lifestyle image, modest crop, focus on fit",
+            "fit_detail": "show stretch fabric and fit detail",
+        }
+    if any(
+        keyword in text
+        for keyword in ("เสื้อ", "ไหมพรม", "แจ็คเก็ต", "โค้ท", "เสื้อกันหนาว")
+    ):
+        return {
+            "subject": "single top garment only, product centered",
+            "detail": "show knit texture, collar, cuffs, seams, and fabric thickness",
+            "angle": "front, back, or angled view of the top only",
+            "lifestyle_title": "Lifestyle model upper-body",
+            "lifestyle": (
+                "upper-body model lifestyle image, modest crop, "
+                "focus on neckline, sleeves, and fit"
+            ),
+            "fit_detail": "show knit texture, stretch, neckline, and sleeve detail",
+        }
+    return {
+        "subject": "single product only, product centered",
+        "detail": "show material texture, stitching, finish, and key details",
+        "angle": "front, back, or angled view of the product only",
+        "lifestyle_title": "Lifestyle product view",
+        "lifestyle": "clean lifestyle image, focus on real product shape and use",
+        "fit_detail": "show material and key product detail",
+    }
 
 
 def build_product_summary(
@@ -700,47 +776,69 @@ def get_product_image_generation_brief(
         f"{product.name}, สี {product.color}, หมวด {product.category}, "
         f"ไซซ์ {size_values or '-'}"
     )
+    profile = image_prompt_profile(product)
     slots = [
         ImageGenerationSlotResponse(
             position=1,
             image_type="product",
             title="Main product image",
-            prompt=f"1:1 clean ecommerce product photo for LINE MyShop, {base_context}, single pair of jeans only, one product centered, no multiple copies, white studio background, premium denim texture, no text",
+            prompt=(
+                "1:1 clean ecommerce product photo for LINE MyShop, "
+                f"{base_context}, {profile['subject']}, no multiple copies, "
+                "white studio background, accurate color and material, no text"
+            ),
             required=True,
         ),
         ImageGenerationSlotResponse(
             position=2,
             image_type="detail",
             title="Detail close-up",
-            prompt=f"1:1 close-up detail photo, {base_context}, show fabric texture, stitching, waistband, premium catalog lighting",
+            prompt=(
+                f"1:1 close-up detail photo, {base_context}, {profile['detail']}, "
+                "premium catalog lighting"
+            ),
             required=True,
         ),
         ImageGenerationSlotResponse(
             position=3,
             image_type="product",
             title="Back or angle view",
-            prompt=f"1:1 ecommerce back or angled view, {base_context}, single pair of jeans only, one product centered, no multiple copies, consistent with reference images, clean background",
+            prompt=(
+                f"1:1 ecommerce product angle view, {base_context}, "
+                f"{profile['angle']}, no multiple copies, "
+                "consistent with reference images, clean background"
+            ),
             required=True,
         ),
         ImageGenerationSlotResponse(
             position=4,
             image_type="lifestyle",
-            title="Lifestyle model waist-down",
-            prompt=f"1:1 waist-down model lifestyle image, {base_context}, modest crop, focus on jeans fit, clean fashion styling",
+            title=profile["lifestyle_title"],
+            prompt=(
+                f"1:1 {profile['lifestyle']}, {base_context}, "
+                "clean fashion styling"
+            ),
             required=False,
         ),
         ImageGenerationSlotResponse(
             position=5,
             image_type="size_chart",
             title="Size guide",
-            prompt=f"1:1 Thai size guide graphic for {product.name}, readable typography, sizes and measurements from variants, clean table layout",
+            prompt=(
+                f"1:1 Thai size guide graphic for {product.name}, "
+                "readable typography, sizes and measurements from variants, "
+                "clean table layout"
+            ),
             required=True,
         ),
         ImageGenerationSlotResponse(
             position=6,
             image_type="detail",
             title="Fabric or fit detail",
-            prompt=f"1:1 detail composition, {base_context}, show stretch fabric and fit detail, premium ecommerce style",
+            prompt=(
+                f"1:1 detail composition, {base_context}, "
+                f"{profile['fit_detail']}, premium ecommerce style"
+            ),
             required=False,
         ),
         ImageGenerationSlotResponse(
@@ -1338,6 +1436,86 @@ def get_product_image_or_404(db: Session, image_id: int) -> ProductImage:
             detail="Product image not found",
         )
     return image
+
+
+@image_router.post("/{image_id}/promote-reference", response_model=ProductImageResponse)
+def promote_reference_image_to_product(
+    image_id: int,
+    db: Session = Depends(get_db),
+) -> ProductImage:
+    reference_image = get_product_image_or_404(db, image_id)
+    if reference_image.image_type != "brief":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Only brief images can be promoted to product images",
+        )
+    if reference_image.status == "rejected":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Rejected reference images cannot be promoted",
+        )
+    product = db.get(Product, reference_image.product_id)
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+
+    settings = get_settings()
+    try:
+        product_image_url = reference_image.url
+        if not is_public_url(reference_image.url):
+            source_path = resolve_workspace_file(reference_image.url)
+            product_image_url = WordPressMediaClient(settings).upload_media(source_path)[
+                "source_url"
+            ]
+
+        existing_main_images = db.scalars(
+            select(ProductImage)
+            .where(ProductImage.product_id == product.id)
+            .where(ProductImage.is_main.is_(True))
+        ).all()
+        for image in existing_main_images:
+            image.is_main = False
+
+        promoted_image = ProductImage(
+            product_id=product.id,
+            url=product_image_url,
+            position=1,
+            status="approved",
+            image_type="product",
+            is_main=True,
+            review_note=f"promoted from reference image #{reference_image.id}",
+        )
+        db.add(promoted_image)
+        db.add(
+            AuditLog(
+                actor=None,
+                action="product_image.promote_reference",
+                target_type="product_image",
+                target_id=reference_image.id,
+                before_payload={
+                    "url": reference_image.url,
+                    "status": reference_image.status,
+                    "image_type": reference_image.image_type,
+                },
+                after_payload={
+                    "url": product_image_url,
+                    "status": promoted_image.status,
+                    "image_type": promoted_image.image_type,
+                    "is_main": promoted_image.is_main,
+                },
+            )
+        )
+        db.commit()
+        db.refresh(promoted_image)
+        return promoted_image
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"reference image promotion failed: {exc}",
+        ) from exc
 
 
 @image_router.post("/{image_id}/approve", response_model=ProductImageResponse)
